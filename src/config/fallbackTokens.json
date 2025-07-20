@@ -1,0 +1,30 @@
+[
+  {
+    "address": "So11111111111111111111111111111111111111112",
+    "name": "Solana",
+    "symbol": "SOL",
+    "decimals": 9,
+    "logoURI": "/assets/tokens/sol.png"
+  },
+  {
+    "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "name": "USD Coin",
+    "symbol": "USDC",
+    "decimals": 6,
+    "logoURI": "/assets/tokens/usdc.png"
+  },
+  {
+    "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+    "name": "Tether USD",
+    "symbol": "USDT",
+    "decimals": 6,
+    "logoURI": "/assets/tokens/usdt.png"
+  },
+  {
+    "address": "94fzsMkuHAuFP4J8iMZS43euWr2CLtuvwLgyjPHyqcnY",
+    "name": "MemeFrenzy",
+    "symbol": "MEME",
+    "decimals": 9,
+    "logoURI": "/assets/tokens/meme.png"
+  }
+]
