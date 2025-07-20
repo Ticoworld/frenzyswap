@@ -12,8 +12,8 @@ import { useSwap } from '@/hooks/useSwap';
 import { getQuote, isValidQuote } from '@/lib/jupiter';
 import { toSmallestUnit, fromSmallestUnit } from '@/lib/utils';
 import { Connection, PublicKey } from '@solana/web3.js';
-import { useRouter } from 'next/navigation';
-import { FaExchangeAlt, FaFire, FaInfoCircle } from 'react-icons/fa';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FaExchangeAlt, FaFire, FaInfoCircle, FaShare } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { QuoteLoader, BalanceSkeleton, SwapPreviewSkeleton } from '@/components/ui/SkeletonLoader';
 import SwapConfirmation from './TransactionConfirmation';
@@ -22,6 +22,7 @@ import { toast } from 'react-hot-toast';
 
 export default function SwapForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { publicKey, connected } = useWallet();
   const { tokens, loading: tokensLoading } = useTokenList();
   const { performSwap, swapError } = useSwap(); // ✅ include swapError
@@ -47,6 +48,55 @@ export default function SwapForm() {
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [showSwapPreview, setShowSwapPreview] = useState(false);
 
+  // Generate shareable URL for current swap configuration
+  const generateShareURL = useCallback(() => {
+    if (!fromToken || !toToken) return '';
+    
+    const baseURL = typeof window !== 'undefined' ? window.location.origin : '';
+    const params = new URLSearchParams();
+    
+    // Use both mint addresses and symbols for maximum compatibility
+    params.set('inputMint', fromToken.address);
+    params.set('outputMint', toToken.address);
+    params.set('from', fromToken.symbol);
+    params.set('to', toToken.symbol);
+    
+    if (fromAmount && parseFloat(fromAmount) > 0) {
+      params.set('amount', fromAmount);
+    }
+    
+    return `${baseURL}/swap?${params.toString()}`;
+  }, [fromToken, toToken, fromAmount]);
+
+  // Handle share button click
+  const handleShare = async () => {
+    const shareURL = generateShareURL();
+    if (!shareURL) return;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `Swap ${fromToken?.symbol} for ${toToken?.symbol} on FrenzySwap`,
+          text: `Check out this swap on FrenzySwap!`,
+          url: shareURL
+        });
+      } else {
+        await navigator.clipboard.writeText(shareURL);
+        toast.success('Swap link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Failed to share:', error);
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareURL);
+        toast.success('Swap link copied to clipboard!');
+      } catch (clipboardError) {
+        console.error('Failed to copy to clipboard:', clipboardError);
+        toast.error('Failed to share link');
+      }
+    }
+  };
+
   useEffect(() => {
     if (tokens.length > 0 && !fromToken) {
       // Prefer USDC as default input token for fee earning
@@ -57,6 +107,54 @@ export default function SwapForm() {
       setToToken(MEME_TOKEN);
     }
   }, [tokens, fromToken, toToken]);
+
+  // Handle URL parameters for pre-filled swaps
+  useEffect(() => {
+    if (tokens.length === 0) return;
+
+    const inputMint = searchParams.get('inputMint');
+    const outputMint = searchParams.get('outputMint'); 
+    const fromSymbol = searchParams.get('from');
+    const toSymbol = searchParams.get('to');
+    const amount = searchParams.get('amount');
+
+    // Handle inputMint parameter (Raydium-style)
+    if (inputMint && !fromToken) {
+      const token = tokens.find(t => t.address === inputMint);
+      if (token) {
+        setFromToken(token);
+      }
+    }
+
+    // Handle outputMint parameter (Raydium-style)
+    if (outputMint && !toToken) {
+      const token = tokens.find(t => t.address === outputMint);
+      if (token) {
+        setToToken(token);
+      }
+    }
+
+    // Handle from parameter (symbol-based)
+    if (fromSymbol && !fromToken) {
+      const token = tokens.find(t => t.symbol.toLowerCase() === fromSymbol.toLowerCase());
+      if (token) {
+        setFromToken(token);
+      }
+    }
+
+    // Handle to parameter (symbol-based)
+    if (toSymbol && !toToken) {
+      const token = tokens.find(t => t.symbol.toLowerCase() === toSymbol.toLowerCase());
+      if (token) {
+        setToToken(token);
+      }
+    }
+
+    // Handle amount parameter
+    if (amount && !fromAmount) {
+      setFromAmount(amount);
+    }
+  }, [tokens, searchParams, fromToken, toToken, fromAmount]);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -421,8 +519,21 @@ export default function SwapForm() {
             </div>
           </div>
 
-          {/* SWAP ICON */}
-          <div className="flex justify-center -my-2 z-10 relative">
+          {/* SWAP ICON & SHARE */}
+          <div className="flex justify-center items-center gap-4 -my-2 z-10 relative">
+            {/* Share Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleShare}
+              className="bg-gray-900 border-2 border-gray-800 p-2 rounded-full text-blue-500 hover:bg-gray-800 hover:border-blue-500 transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              aria-label="Share swap link"
+              disabled={!fromToken || !toToken}
+            >
+              <FaShare className="h-4 w-4" />
+            </motion.button>
+
+            {/* Flip Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -576,7 +687,6 @@ export default function SwapForm() {
               !quote ||
               !!error ||
               quoteLoading ||
-              !connected ||
               parseFloat(fromAmount) <= 0 ||
               (balance !== null && (parseFloat(fromAmount) + memeFee + referralFee) > balance)
             }

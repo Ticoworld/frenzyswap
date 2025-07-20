@@ -1,6 +1,7 @@
 'use client';
 
 import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import { motion } from 'framer-motion';
 
 export default function SwapButton({
@@ -13,10 +14,21 @@ export default function SwapButton({
   onClick: () => void;
 }) {
   const { connected } = useWallet();
+  const { setVisible } = useWalletModal();
+
+  const handleClick = () => {
+    if (!connected) {
+      // If wallet not connected, trigger wallet modal
+      setVisible(true);
+    } else {
+      // If wallet connected, proceed with swap
+      onClick();
+    }
+  };
 
   const getButtonText = () => {
     if (isLoading) return 'Calculating...';
-    if (!connected) return 'Connect Wallet to Swap';
+    if (!connected) return 'Connect Wallet';
     if (disabled) return 'Enter Amount to Swap';
     return 'Swap Now';
   };
@@ -28,17 +40,22 @@ export default function SwapButton({
     return 'Execute token swap';
   };
 
+  // Button is always enabled unless loading, but different logic for connected/disconnected
+  const isButtonDisabled = isLoading || (connected && disabled);
+
   return (
     <motion.button
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      whileHover={{ scale: isButtonDisabled ? 1 : 1.02 }}
+      whileTap={{ scale: isButtonDisabled ? 1 : 0.98 }}
       className={`w-full py-3 px-4 rounded-xl font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
-        connected && !disabled
+        !connected 
+          ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white shadow-lg focus:ring-blue-500'
+          : !isButtonDisabled
           ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black shadow-lg focus:ring-yellow-500'
           : 'bg-gray-700 text-gray-400 cursor-not-allowed focus:ring-gray-500'
       } ${isLoading ? 'opacity-75' : ''}`}
-      disabled={!connected || disabled}
-      onClick={onClick}
+      disabled={isButtonDisabled}
+      onClick={handleClick}
       aria-label={getAriaLabel()}
       type="button"
     >

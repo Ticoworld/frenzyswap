@@ -8,6 +8,7 @@ import {
   FiArrowRight
 } from 'react-icons/fi';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function HowItWorks() {
   return (
@@ -216,13 +217,15 @@ export default function HowItWorks() {
                 </div>
               </div>
               
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="mt-8 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold py-4 px-8 rounded-xl text-center border-2 border-yellow-400 shadow-lg"
-              >
-                Start Swapping Now
-              </motion.div>
+              <Link href="/swap">
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="mt-8 bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-bold py-4 px-8 rounded-xl text-center border-2 border-yellow-400 shadow-lg cursor-pointer"
+                >
+                  Start Swapping Now
+                </motion.div>
+              </Link>
             </motion.div>
           </div>
         </div>

@@ -14,7 +14,7 @@ export default function Partners() {
     { name: "Jupiter", logo: "/assets/partners/jupiter.png" },
     { name: "Raydium", logo: "/assets/partners/raydium.png" },
     { name: "Serum", logo: "/assets/partners/serum.png" },
-    { name: "Phantom", logo: "/assets/partners/phantom.svg" },
+    { name: "Phantom", logo: "/assets/partners/phantom.png" },
     { name: "CoinGecko", logo: "/assets/partners/coingecko.png" },
   ];
 

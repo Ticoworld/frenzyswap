@@ -126,7 +126,7 @@ export default function Hero() {
                 src="/assets/frenzy-desktop.png"
                 alt="FrenzySwap Desktop Interface"
                 width={600}
-                height={400}
+                height={600}
                 className="rounded-2xl shadow-xl w-full h-auto object-contain"
                 priority
               />

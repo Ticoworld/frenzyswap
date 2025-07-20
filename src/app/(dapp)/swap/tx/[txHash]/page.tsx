@@ -85,7 +85,7 @@ export default function TransactionPage({
 
           {/* Burn Notice */}
           <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-xl p-3 text-center text-yellow-500 text-sm mb-6">
-            🔥 A portion of fees has been used to buyback and burn MEME tokens
+            🔥 A portion of fees goes toward buying back and burning MEME tokens
           </div>
 
           {/* Action Buttons */}
