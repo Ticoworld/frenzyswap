@@ -66,8 +66,95 @@ export default function Roadmap() {
   };
 
   return (
-    <section className="py-16 bg-gray-900">
-      <div className="container mx-auto px-4">
+    <section className="py-16 bg-gray-800 relative overflow-hidden">
+      {/* Future/Timeline Cosmic Background */}
+      <div className="absolute inset-0 z-0">
+        {/* Timeline cosmic grid */}
+        <motion.div
+          className="absolute inset-0 opacity-25"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.25 }}
+          transition={{ duration: 2 }}
+        >
+          <svg className="w-full h-full" viewBox="0 0 1440 800">
+            <defs>
+              <pattern id="roadmap-grid" x="0" y="0" width="110" height="110" patternUnits="userSpaceOnUse">
+                <path d="M 110 0 L 0 0 0 110" fill="none" stroke="#f59e0b" strokeWidth="1.2" opacity="0.5"/>
+                <circle cx="0" cy="0" r="2.5" fill="#f59e0b" opacity="0.7"/>
+                <circle cx="55" cy="55" r="1.5" fill="#3b82f6" opacity="0.6"/>
+              </pattern>
+              <radialGradient id="roadmap-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.18"/>
+                <stop offset="100%" stopColor="#f59e0b" stopOpacity="0"/>
+              </radialGradient>
+              <linearGradient id="timeline-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.7"/>
+                <stop offset="50%" stopColor="#3b82f6" stopOpacity="0.5"/>
+                <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.4"/>
+              </linearGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#roadmap-grid)"/>
+            <circle cx="30%" cy="40%" r="180" fill="url(#roadmap-glow)"/>
+            <circle cx="70%" cy="60%" r="160" fill="url(#roadmap-glow)"/>
+            {/* Timeline progression line */}
+            <path d="M 50 400 L 350 380 L 650 420 L 950 400 L 1250 380" stroke="url(#timeline-gradient)" strokeWidth="4" opacity="0.6" fill="none"/>
+            {/* Milestone markers */}
+            <circle cx="350" cy="380" r="7" fill="#f59e0b" opacity="0.9"/>
+            <circle cx="650" cy="420" r="6" fill="#3b82f6" opacity="0.8"/>
+            <circle cx="950" cy="400" r="5" fill="#8b5cf6" opacity="0.7"/>
+          </svg>
+        </motion.div>
+
+        {/* Timeline floating particles */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 22 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${2.5 + Math.random() * 3}px`,
+                height: `${2.5 + Math.random() * 3}px`,
+                background: i % 3 === 0 ? '#f59e0b' : i % 3 === 1 ? '#3b82f6' : '#8b5cf6',
+                opacity: 0.5,
+                boxShadow: '0 0 4px currentColor',
+              }}
+              animate={{
+                x: [0, Math.random() * 50 - 25, 0],
+                y: [0, -25, 0],
+                opacity: [0.3, 0.8, 0.3],
+                scale: [1, 1.4, 1],
+              }}
+              transition={{
+                duration: 6 + Math.random() * 4,
+                repeat: Infinity,
+                delay: Math.random() * 5,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Enhanced timeline gradient circles */}
+        <motion.div
+          className="absolute top-12 right-12 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.08, 0.2, 0.08] }}
+          transition={{ duration: 18, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute bottom-12 left-12 w-80 h-80 bg-blue-500/12 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.06, 0.18, 0.06] }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute top-1/2 right-1/4 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.15, 0.05] }}
+          transition={{ duration: 24, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}

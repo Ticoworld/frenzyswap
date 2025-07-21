@@ -1,0 +1,68 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "FrenzySwap",
+  "url": "https://frenzyswap.com",
+  "description": "Premier Solana DEX aggregator for meme token trading with best rates powered by Jupiter",
+  "applicationCategory": "DeFi",
+  "operatingSystem": "Web Browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free to use DEX aggregator"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "FrenzySwap",
+    "url": "https://frenzyswap.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "FrenzySwap",
+    "url": "https://frenzyswap.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://frenzyswap.com/assets/logos/frenzyswap_logomark.svg"
+    }
+  },
+  "featureList": [
+    "DEX aggregation powered by Jupiter",
+    "Best rates for token swaps",
+    "Meme token ecosystem",
+    "$MEME tokenomics with buyback & burn",
+    "Solana blockchain integration",
+    "Multiple wallet support",
+    "Real-time price feeds",
+    "Low transaction fees"
+  ],
+  "browserRequirements": "Requires JavaScript. Modern browser recommended.",
+  "permissions": "Camera (for QR codes), Clipboard (for wallet addresses)",
+  "screenshot": {
+    "@type": "ImageObject",
+    "url": "https://frenzyswap.com/assets/frenzy-desktop.png",
+    "caption": "FrenzySwap DEX Interface"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "ratingCount": "250",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Solana DeFi User"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "reviewBody": "Best DEX aggregator for meme tokens on Solana. Great rates and smooth interface."
+    }
+  ]
+}

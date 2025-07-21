@@ -1,0 +1,53 @@
+# FrenzySwap Security & Trust Information
+
+## Official Domain
+- **Primary Domain**: frenzyswap.com
+- **SSL Certificate**: Active and valid
+- **Domain Registration**: Registered and maintained by FrenzySwap team
+
+## Smart Contracts
+- **Contract Address**: [To be added when deployed]
+- **Audit Status**: [Smart contract audit information]
+- **Code Repository**: [GitHub repository if public]
+
+## Security Measures
+- **SSL/TLS Encryption**: All data transmission encrypted
+- **Wallet Integration**: Only connects to official wallet providers
+- **No Private Key Storage**: We never store or request private keys
+- **Non-Custodial**: Users maintain full control of their funds
+
+## Supported Wallets
+- Phantom Wallet
+- Solflare Wallet
+- Backpack Wallet
+- Glow Wallet
+- Other Solana-compatible wallets
+
+## Third-Party Integrations
+- **Jupiter Protocol**: DEX aggregation service
+- **Solana RPC**: Official Solana network endpoints
+- **Token Lists**: Verified token registries
+
+## Contact Information
+- **Website**: https://frenzyswap.com
+- **Support Email**: support@frenzyswap.com
+- **Security Email**: security@frenzyswap.com
+- **Twitter**: @FrenzySwap
+- **Discord**: [Community Discord]
+- **Telegram**: [Official Telegram]
+
+## Legal Compliance
+- **Terms of Service**: https://frenzyswap.com/legal/terms
+- **Privacy Policy**: https://frenzyswap.com/legal/privacy
+- **Risk Disclaimer**: https://frenzyswap.com/legal/disclaimer
+
+## Team & Company
+- **Company Name**: FrenzySwap
+- **Registration**: [Company registration details]
+- **Location**: [Legal jurisdiction]
+
+## Verification
+This document serves as official verification of FrenzySwap's legitimacy and can be referenced by wallet providers and security services.
+
+**Last Updated**: [Current Date]
+**Document Version**: 1.0

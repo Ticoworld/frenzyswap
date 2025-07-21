@@ -4,8 +4,78 @@ import { FiDollarSign, FiShoppingCart, FiZap, FiTrendingUp } from 'react-icons/f
 import { motion } from 'framer-motion';
 export default function ValueProps() {
   return (
-    <section className="min-h-screen py-16 bg-gray-800 flex items-center">
-      <div className="container mx-auto px-4">
+    <section className="min-h-screen py-16 bg-gray-800 flex items-center relative overflow-hidden">
+      {/* Value-Focused Cosmic Background */}
+      <div className="absolute inset-0 z-0">
+        {/* Financial/value cosmic grid */}
+        <motion.div
+          className="absolute inset-0 opacity-20"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.2 }}
+          transition={{ duration: 2 }}
+        >
+          <svg className="w-full h-full" viewBox="0 0 1440 800">
+            <defs>
+              <pattern id="value-grid" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+                <path d="M 120 0 L 0 0 0 120" fill="none" stroke="#10b981" strokeWidth="1" opacity="0.4"/>
+                <circle cx="0" cy="0" r="2" fill="#10b981" opacity="0.6"/>
+                <circle cx="60" cy="60" r="1.5" fill="#facc15" opacity="0.5"/>
+              </pattern>
+              <radialGradient id="value-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.15"/>
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#value-grid)"/>
+            <circle cx="25%" cy="25%" r="200" fill="url(#value-glow)"/>
+            <circle cx="75%" cy="75%" r="160" fill="url(#value-glow)"/>
+            {/* Value flow lines */}
+            <path d="M 100 300 Q 300 250 500 350 T 800 400" stroke="#10b981" strokeWidth="1.5" opacity="0.3" fill="none"/>
+            <path d="M 200 150 Q 400 100 600 200 T 900 250" stroke="#facc15" strokeWidth="1" opacity="0.3" fill="none"/>
+          </svg>
+        </motion.div>
+
+        {/* Value-themed floating particles */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 15 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${2 + Math.random() * 2}px`,
+                height: `${2 + Math.random() * 2}px`,
+                background: i % 3 === 0 ? '#10b981' : i % 3 === 1 ? '#facc15' : '#3b82f6',
+                opacity: 0.4,
+              }}
+              animate={{
+                y: [0, -15, 0],
+                opacity: [0.2, 0.6, 0.2],
+              }}
+              transition={{
+                duration: 4 + Math.random() * 3,
+                repeat: Infinity,
+                delay: Math.random() * 3,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Subtle gradient circles */}
+        <motion.div
+          className="absolute top-20 right-20 w-72 h-72 bg-green-500/8 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.15, 0.05] }}
+          transition={{ duration: 14, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute bottom-20 left-20 w-80 h-80 bg-yellow-500/6 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.03, 0.12, 0.03] }}
+          transition={{ duration: 16, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

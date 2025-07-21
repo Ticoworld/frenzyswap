@@ -1,0 +1,44 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+# Security Policy for FrenzySwap
+
+## Canonical URLs
+- Primary: https://frenzyswap.com
+- Repository: [GitHub repository URL if applicable]
+
+## Contact Information
+- Email: security@frenzyswap.com
+- Encryption: [PGP key fingerprint]
+- Languages: English
+
+## Disclosure Policy
+- Please report security vulnerabilities to security@frenzyswap.com
+- We will acknowledge receipt within 24 hours
+- We aim to provide initial assessment within 72 hours
+- Public disclosure coordination period: 90 days
+
+## Scope
+This security policy applies to:
+- frenzyswap.com domain and all subdomains
+- FrenzySwap smart contracts
+- Official mobile applications (if any)
+
+## Out of Scope
+- Third-party integrations (Jupiter, Solana RPC)
+- User wallet security
+- Social engineering attacks
+
+## Rewards
+We appreciate responsible disclosure and may offer:
+- Public recognition
+- Swag and merchandise
+- Monetary rewards for critical vulnerabilities
+
+## Legal
+- We will not pursue legal action against security researchers
+- This policy is subject to local laws and regulations
+
+-----BEGIN PGP SIGNATURE-----
+[PGP signature would go here]
+-----END PGP SIGNATURE-----

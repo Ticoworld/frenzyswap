@@ -42,6 +42,98 @@ export default function Tokenomics() {
 
   return (
     <section className="py-16 bg-gray-900 relative overflow-hidden">
+      {/* Cosmic Tokenomics Background */}
+      <div className="absolute inset-0 z-0">
+        {/* Enhanced cosmic grid with purple/green theme for tokenomics */}
+        <motion.div
+          className="absolute inset-0 opacity-30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.3 }}
+          transition={{ duration: 2 }}
+        >
+          <svg className="w-full h-full" viewBox="0 0 1440 800">
+            <defs>
+              <pattern id="tokenomics-grid" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+                <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#8b5cf6" strokeWidth="1" opacity="0.5"/>
+                <circle cx="0" cy="0" r="2" fill="#8b5cf6" opacity="0.7"/>
+                <circle cx="50" cy="50" r="1" fill="#10b981" opacity="0.6"/>
+              </pattern>
+              <radialGradient id="tokenomics-glow-purple" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.2"/>
+                <stop offset="50%" stopColor="#10b981" stopOpacity="0.1"/>
+                <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0"/>
+              </radialGradient>
+              <radialGradient id="tokenomics-glow-green" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.15"/>
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0"/>
+              </radialGradient>
+              <filter id="tokenomics-glow">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge> 
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#tokenomics-grid)"/>
+            <circle cx="30%" cy="20%" r="220" fill="url(#tokenomics-glow-purple)" filter="url(#tokenomics-glow)"/>
+            <circle cx="70%" cy="80%" r="180" fill="url(#tokenomics-glow-green)" filter="url(#tokenomics-glow)"/>
+            {/* Tokenomics connection lines representing value flow */}
+            <path d="M 150 200 Q 300 150 450 250 T 750 300" stroke="#8b5cf6" strokeWidth="2" opacity="0.4" fill="none" filter="url(#tokenomics-glow)"/>
+            <path d="M 200 400 Q 400 350 600 450 T 1000 500" stroke="#10b981" strokeWidth="1.5" opacity="0.4" fill="none"/>
+            <path d="M 100 100 Q 250 80 400 150 T 700 200" stroke="#facc15" strokeWidth="1" opacity="0.3" fill="none"/>
+          </svg>
+        </motion.div>
+
+        {/* Token-themed floating particles */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 25 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${2 + Math.random() * 3}px`,
+                height: `${2 + Math.random() * 3}px`,
+                background: i % 4 === 0 ? '#8b5cf6' : i % 4 === 1 ? '#10b981' : i % 4 === 2 ? '#facc15' : '#3b82f6',
+                opacity: 0.5,
+                boxShadow: '0 0 4px currentColor',
+              }}
+              animate={{
+                y: [0, -20, 0],
+                x: [0, Math.random() * 15 - 7.5, 0],
+                opacity: [0.3, 0.7, 0.3],
+                scale: [1, 1.3, 1],
+              }}
+              transition={{
+                duration: 6 + Math.random() * 4,
+                repeat: Infinity,
+                delay: Math.random() * 5,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Enhanced animated gradient circles for tokenomics */}
+        <motion.div
+          className="absolute top-16 left-16 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.25, 0.1] }}
+          transition={{ duration: 15, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute bottom-16 right-16 w-80 h-80 bg-green-500/12 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.2, 0.08] }}
+          transition={{ duration: 18, repeat: Infinity, repeatType: "reverse" }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-yellow-500/8 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.05, 0.15, 0.05] }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse" }}
+        />
+      </div>
+
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
