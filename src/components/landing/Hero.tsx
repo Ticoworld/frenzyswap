@@ -108,8 +108,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            Welcome to the <span className="text-yellow-500">MemeFrenzy</span>{" "}
-            Revolution
+            <span className="text-yellow-500">FrenzySwap</span> - Premier Solana DEX Aggregator
           </motion.h1>
 
           <motion.p
@@ -118,8 +117,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            FrenzySwap is your gateway to a complete meme token experience. Swap
-            your favorite meme coins and utility tokens, earn rewards...
+            Trade meme tokens on Solana with the best rates. FrenzySwap aggregates liquidity from multiple DEXs using Jupiter Protocol, ensuring optimal swap prices for SOL, USDC, and popular meme tokens. Our deflationary $MEME tokenomics features automatic buyback and burn mechanisms that increase token value with every transaction. Join thousands of traders in the fastest-growing Solana DeFi ecosystem.
           </motion.p>
 
           <motion.div

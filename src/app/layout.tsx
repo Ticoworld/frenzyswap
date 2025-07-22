@@ -4,12 +4,13 @@ import { Inter } from "next/font/google";
 import GlobalLoader from "@/components/ui/Loader";
 import RouteLoader from "@/components/ui/RouteLoader";
 import Providers from "./providers";
+import StructuredData from "@/components/common/StructuredData";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "FrenzySwap | Premier Solana DEX Aggregator for Meme Tokens",
-  description: "FrenzySwap is the leading DEX aggregator on Solana for meme token trading. Swap tokens with the best rates, powered by Jupiter. Join the $MEME ecosystem with buyback & burn tokenomics.",
+  description: "Leading Solana DEX aggregator for meme tokens. Best swap rates powered by Jupiter. $MEME tokenomics with buyback & burn.",
   keywords: [
     "FrenzySwap",
     "Solana DEX",
@@ -27,14 +28,14 @@ export const metadata: Metadata = {
   authors: [{ name: "FrenzySwap Team" }],
   creator: "FrenzySwap",
   publisher: "FrenzySwap",
-  metadataBase: new URL('https://frenzyswap.com'),
+  metadataBase: new URL('https://www.frenzyswap.com'),
   alternates: {
-    canonical: 'https://frenzyswap.com',
+    canonical: 'https://www.frenzyswap.com',
   },
   openGraph: {
     title: "FrenzySwap | Premier Solana DEX Aggregator",
     description: "Trade meme tokens on Solana with the best rates. Powered by Jupiter aggregation with $MEME tokenomics.",
-    url: 'https://frenzyswap.com',
+    url: 'https://www.frenzyswap.com',
     siteName: 'FrenzySwap',
     type: 'website',
     locale: 'en_US',
@@ -69,9 +70,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code', // Add your Google Search Console verification code
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
+    google: 'google97e51ede541934ca.html', 
   },
   category: 'DeFi',
   classification: 'Decentralized Finance',
@@ -89,6 +88,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <StructuredData />
+      </head>
       <body className={`${inter.className} bg-gray-900 text-white`}>
         <Providers>
           <GlobalLoader />

@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://frenzyswap.com/sitemap.xml
+Sitemap: https://www.frenzyswap.com/sitemap.xml
 
 # Allow all crawlers to access the site
 User-agent: Googlebot
@@ -28,4 +28,4 @@ Allow: /legal/privacy
 Allow: /legal/disclaimer
 
 # Host declaration
-Host: https://frenzyswap.com
+Host: https://www.frenzyswap.com
