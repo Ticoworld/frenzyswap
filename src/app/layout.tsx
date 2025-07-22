@@ -70,8 +70,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'google97e51ede541934ca.html', 
+    google: 'tZ2akjagY2P18ftTb_cyRKWwmmmg1NnTBsVmcXfYL2M', 
   },
+  
   category: 'DeFi',
   classification: 'Decentralized Finance',
   icons: {
