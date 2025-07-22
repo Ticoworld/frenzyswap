@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export default function HowItWorks() {
   return (
-    <section className="min-h-screen py-16 bg-gray-900 flex items-center overflow-x-hidden relative">
+    <section className="min-h-screen py-16 bg-gray-900 flex md:items-center  items-start -x-hidden relative">
       {/* Web3 Background Pattern */}
       <div className="absolute inset-0 z-0">
         {/* Cosmic grid background */}
@@ -99,7 +99,7 @@ export default function HowItWorks() {
           </p>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start lg:items-center">
           {/* Left Column - Process Steps */}
           <div className="lg:w-1/2">
             <div className="relative max-w-md mx-auto lg:mx-0">

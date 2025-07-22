@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${baseUrl}/swap`,
-      lastModified: new Date(),
+      lastModified: new Date('2025-01-22'),
       changeFrequency: 'daily',
       priority: 0.9,
     },

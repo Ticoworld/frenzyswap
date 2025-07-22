@@ -6,7 +6,7 @@ import { FiArrowDown, FiRefreshCw, FiDollarSign, FiZap } from "react-icons/fi";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-black min-h-[100vh] md:min-h-screen overflow-x-hidden">
+    <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-black min-h-screen flex items-center overflow-x-hidden">
       {/* Cosmic grid background */}
       <div className="absolute inset-0 z-0">
         {/* Enhanced cosmic grid with brighter Web3 aesthetic */}
@@ -16,12 +16,12 @@ export default function Hero() {
           animate={{ opacity: 0.4 }}
           transition={{ duration: 2 }}
         >
-          <svg className="w-full h-full" viewBox="0 0 1440 800">
+          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
             <defs>
-              <pattern id="cosmic-grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#facc15" strokeWidth="1" opacity="0.6"/>
-                <circle cx="0" cy="0" r="2" fill="#facc15" opacity="0.8"/>
-                <circle cx="60" cy="60" r="1.5" fill="#3b82f6" opacity="0.6"/>
+              <pattern id="cosmic-grid" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
+                <path d="M 4 0 L 0 0 0 4" fill="none" stroke="#facc15" strokeWidth="0.08" opacity="0.6"/>
+                <circle cx="0" cy="0" r="0.12" fill="#facc15" opacity="0.8"/>
+                <circle cx="4" cy="4" r="0.1" fill="#3b82f6" opacity="0.6"/>
               </pattern>
               <radialGradient id="cosmic-glow" cx="50%" cy="50%" r="60%">
                 <stop offset="0%" stopColor="#facc15" stopOpacity="0.2"/>
@@ -29,7 +29,7 @@ export default function Hero() {
                 <stop offset="100%" stopColor="#facc15" stopOpacity="0"/>
               </radialGradient>
               <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="0.2" result="coloredBlur"/>
                 <feMerge> 
                   <feMergeNode in="coloredBlur"/>
                   <feMergeNode in="SourceGraphic"/>
@@ -37,11 +37,11 @@ export default function Hero() {
               </filter>
             </defs>
             <rect width="100%" height="100%" fill="url(#cosmic-grid)"/>
-            <circle cx="25%" cy="25%" r="250" fill="url(#cosmic-glow)" filter="url(#glow)"/>
-            <circle cx="75%" cy="75%" r="200" fill="url(#cosmic-glow)" filter="url(#glow)"/>
+            <circle cx="25%" cy="25%" r="15" fill="url(#cosmic-glow)" filter="url(#glow)"/>
+            <circle cx="75%" cy="75%" r="12" fill="url(#cosmic-glow)" filter="url(#glow)"/>
             {/* Solana-inspired connection lines */}
-            <path d="M 200 150 Q 400 100 600 200 T 1000 250" stroke="#facc15" strokeWidth="2" opacity="0.3" fill="none" filter="url(#glow)"/>
-            <path d="M 100 300 Q 350 250 550 350 T 900 400" stroke="#3b82f6" strokeWidth="1.5" opacity="0.4" fill="none"/>
+            <path d="M 15 10 Q 25 8 40 15 T 65 18" stroke="#facc15" strokeWidth="0.15" opacity="0.3" fill="none" filter="url(#glow)"/>
+            <path d="M 8 20 Q 22 18 35 25 T 60 30" stroke="#3b82f6" strokeWidth="0.1" opacity="0.4" fill="none"/>
           </svg>
         </motion.div>
 
@@ -89,13 +89,13 @@ export default function Hero() {
         />
         
         {/* Enhanced polygon mesh */}
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="0,600 400,700 800,650 1200,750 1440,600 1440,800 0,800" fill="#facc15" fillOpacity="0.08" />
-          <polygon points="0,400 300,500 900,450 1440,500 1440,800 0,800" fill="#3b82f6" fillOpacity="0.06" />
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="0,75 25,85 60,80 85,90 100,75 100,100 0,100" fill="#facc15" fillOpacity="0.08" />
+          <polygon points="0,50 20,65 70,60 100,65 100,100 0,100" fill="#3b82f6" fillOpacity="0.06" />
         </svg>
       </div>
 
-      <div className="container mx-auto px-4 py-16 md:py-24 flex flex-col md:flex-row items-center relative z-10 gap-8 md:gap-12">
+      <div className="container mx-auto px-4 py-8 md:py-16 flex flex-col md:flex-row items-center relative z-10 gap-8 md:gap-12 min-h-screen md:min-h-0">
         <motion.div
           className="md:w-1/2 mb-8 md:mb-0"
           initial={{ opacity: 0, y: 20 }}

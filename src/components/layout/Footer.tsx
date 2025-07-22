@@ -27,6 +27,29 @@ export default function Footer() {
           
           <div className="flex flex-wrap justify-center gap-6">
             <div className="text-center">
+              <h4 className="text-gray-400 mb-2">Platform</h4>
+              <div className="flex flex-col space-y-1">
+                <a
+                  href="/swap"
+                  className="text-gray-500 hover:text-yellow-500 text-sm font-medium"
+                >
+                  Swap Tokens
+                </a>
+                <a
+                  href="/staking"
+                  className="text-gray-500 hover:text-yellow-500 text-sm"
+                >
+                  Staking
+                </a>
+                <a
+                  href="/dao"
+                  className="text-gray-500 hover:text-yellow-500 text-sm"
+                >
+                  DAO
+                </a>
+              </div>
+            </div>
+            <div className="text-center">
               <h4 className="text-gray-400 mb-2">Legal</h4>
               <div className="flex flex-col space-y-1">
                 <a
