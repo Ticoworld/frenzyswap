@@ -117,7 +117,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            Trade meme tokens on Solana with the best rates. FrenzySwap aggregates liquidity from multiple DEXs using Jupiter Protocol, ensuring optimal swap prices for SOL, USDC, and popular meme tokens. Our deflationary $MEME tokenomics features automatic buyback and burn mechanisms that increase token value with every transaction. Join thousands of traders in the fastest-growing Solana DeFi ecosystem.
+            Trade Solana meme tokens with the best rates. Powered by Jupiter Protocol for optimal swap prices and lightning-fast transactions.
           </motion.p>
 
           <motion.div
