@@ -125,7 +125,9 @@ export function useTokenList() {
     if (!searchQuery) return tokens;
     const query = searchQuery.toLowerCase();
     return tokens.filter((t) =>
-      t.symbol.toLowerCase().includes(query) || t.name.toLowerCase().includes(query)
+      t.symbol.toLowerCase().includes(query) || 
+      t.name.toLowerCase().includes(query) ||
+      t.address.toLowerCase().includes(query)
     );
   }, [tokens, searchQuery]);
 

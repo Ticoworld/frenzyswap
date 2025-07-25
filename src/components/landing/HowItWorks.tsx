@@ -162,7 +162,7 @@ export default function HowItWorks() {
           </div>
           
           {/* Right Column - Visualization */}
-          <div className="lg:w-1/2 flex justify-center lg:justify-start">
+<div className="lg:w-1/2 flex justify-center lg:justify-start self-center lg:self-start">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}

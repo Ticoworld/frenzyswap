@@ -327,7 +327,7 @@ export default function SwapForm() {
   }, [swapError]);
 
   const handleSwap = async () => {
-    if (!quote || !fromToken || !publicKey || !referralAccount) return;
+    if (!quote || !fromToken || !toToken || !publicKey || !referralAccount) return;
 
     const fromAmountNum = parseFloat(fromAmount);
     if (balance === null || fromAmountNum > balance) {
@@ -346,6 +346,44 @@ export default function SwapForm() {
     try {
       const tx = await performSwap(quote, publicKey.toString(), referralAccount, connection);
       setTxHash(tx);
+      
+      // 📊 Log swap data for analytics
+      try {
+        // Calculate USD values (you can improve this with real price feeds)
+        const estimatedFromUsdValue = fromAmountNum * (fromToken.symbol === 'USDC' ? 1 : 
+                                      fromToken.symbol === 'SOL' ? 100 : // rough SOL price
+                                      1); // fallback
+        const estimatedToUsdValue = parseFloat(toAmount) * (toToken.symbol === 'USDC' ? 1 : 
+                                    toToken.symbol === 'SOL' ? 100 : // rough SOL price
+                                    1); // fallback
+
+        await fetch('/api/log-swap', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            walletAddress: publicKey.toString(),
+            fromToken: fromToken.symbol,
+            toToken: toToken.symbol,
+            fromAmount: fromAmountNum,
+            toAmount: parseFloat(toAmount),
+            fromUsdValue: estimatedFromUsdValue,
+            toUsdValue: estimatedToUsdValue,
+            feesPaid: memeFee + referralFee,
+            feesUsdValue: (memeFee + referralFee) * 100, // rough estimate
+            signature: tx,
+            blockTime: Math.floor(Date.now() / 1000),
+            jupiterFee: referralFee,
+            platformFee: memeFee,
+            memeBurned: memeFee, // MEME tokens burned as fees
+            slippage: slippage / 100,
+            routePlan: JSON.stringify(quote?.routePlan || {})
+          })
+        });
+      } catch (logError) {
+        // Don't fail the swap if logging fails
+        console.error('Failed to log swap:', logError);
+      }
+
       router.push(`/swap/tx/${tx}?fromToken=${fromToken.symbol}&toToken=${toToken?.symbol}&fromAmount=${fromAmount}&toAmount=${toAmount}`);
     } catch (err: any) {
       setError(err.message || 'Swap execution failed');

@@ -1,0 +1,187 @@
+// src/app/login/page.tsx
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { motion } from 'framer-motion';
+import { FiLock, FiCheck, FiX } from 'react-icons/fi';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
+export default function LoginPage() {
+  const { publicKey, connected, disconnect } = useWallet();
+  const { setVisible } = useWalletModal();
+  const router = useRouter();
+  
+  const [isChecking, setIsChecking] = useState(false);
+  const [accessStatus, setAccessStatus] = useState<'checking' | 'granted' | 'denied' | null>(null);
+
+  const checkAccess = useCallback(async () => {
+    if (!publicKey) return;
+    
+    setIsChecking(true);
+    setAccessStatus('checking');
+    
+    try {
+      // Get allowed wallets from environment
+      const allowedWallets = process.env.NEXT_PUBLIC_ALLOWED_WALLETS?.split(',') || [];
+      const walletAddress = publicKey.toString();
+      
+      if (allowedWallets.includes(walletAddress)) {
+        // Set cookie for middleware to read
+        document.cookie = `connected-wallet=${walletAddress}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+        
+        setAccessStatus('granted');
+        
+        // Redirect to app after brief success message
+        setTimeout(() => {
+          router.push('/swap');
+        }, 2000);
+      } else {
+        setAccessStatus('denied');
+      }
+    } catch (error) {
+      console.error('Access check failed:', error);
+      setAccessStatus('denied');
+    } finally {
+      setIsChecking(false);
+    }
+  }, [publicKey, router]);
+
+  useEffect(() => {
+    if (connected && publicKey) {
+      checkAccess();
+    } else {
+      setAccessStatus(null);
+    }
+  }, [connected, publicKey, checkAccess]);
+
+  const handleDisconnect = () => {
+    disconnect();
+    document.cookie = 'connected-wallet=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    setAccessStatus(null);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md bg-gray-800 rounded-2xl p-8 shadow-2xl border border-gray-700"
+      >
+        {/* Header */}
+        <div className="text-center mb-8">
+          <Image
+            src="/assets/logos/frenzyswap_logomark.svg"
+            alt="FrenzySwap Logo"
+            width={64}
+            height={64}
+            className="mx-auto mb-4"
+          />
+          <h1 className="text-2xl font-bold text-white mb-2">FrenzySwap Beta</h1>
+          <p className="text-gray-400">Private access for invited wallets only</p>
+        </div>
+
+        {/* Wallet Connection */}
+        {!connected ? (
+          <div className="space-y-4">
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-center">
+              <FiLock className="text-yellow-500 text-2xl mx-auto mb-2" />
+              <p className="text-yellow-500 font-medium mb-1">Invitation Required</p>
+              <p className="text-gray-400 text-sm">
+                Connect your whitelisted Solana wallet to access the beta
+              </p>
+            </div>
+            
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setVisible(true)}
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-xl transition-colors"
+            >
+              Connect Wallet
+            </motion.button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Connected Wallet Info */}
+            <div className="bg-gray-700 rounded-xl p-4">
+              <div className="text-sm text-gray-400 mb-2">Connected Wallet</div>
+              <div className="text-white font-mono text-sm break-all mb-3">
+                {publicKey?.toString()}
+              </div>
+              <button
+                onClick={handleDisconnect}
+                className="text-red-400 hover:text-red-300 text-sm underline"
+              >
+                Disconnect
+              </button>
+            </div>
+
+            {/* Access Status */}
+            {accessStatus === 'checking' && (
+              <div className="text-center py-6">
+                <div className="animate-spin w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full mx-auto mb-3"></div>
+                <p className="text-gray-300 font-medium">Verifying access...</p>
+                <p className="text-gray-500 text-sm mt-1">Checking wallet against allowlist</p>
+              </div>
+            )}
+
+            {accessStatus === 'granted' && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-6"
+              >
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FiCheck className="text-green-500 text-3xl" />
+                </div>
+                <p className="text-green-400 font-bold text-lg mb-2">Access Granted! 🎉</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  Welcome to FrenzySwap Beta. Redirecting to the app...
+                </p>
+                <div className="flex justify-center">
+                  <div className="animate-pulse flex space-x-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {accessStatus === 'denied' && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-6"
+              >
+                <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FiX className="text-red-500 text-3xl" />
+                </div>
+                <p className="text-red-400 font-bold text-lg mb-2">Access Denied</p>
+                <p className="text-gray-400 text-sm mb-4">
+                  Your wallet is not on the beta allowlist. FrenzySwap is currently in private beta for invited users only.
+                </p>
+                <div className="bg-gray-900 rounded-lg p-3 text-left">
+                  <p className="text-gray-300 text-sm font-medium mb-2">Want beta access?</p>
+                  <p className="text-gray-500 text-xs leading-relaxed">
+                    Follow our social media for announcements about public launch and beta invitations.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="mt-8 pt-6 border-t border-gray-700 text-center">
+          <p className="text-gray-500 text-xs">
+            FrenzySwap • Private Beta • Solana DeFi
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
