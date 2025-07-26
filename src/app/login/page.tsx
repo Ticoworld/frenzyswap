@@ -34,9 +34,11 @@ export default function LoginPage() {
         
         setAccessStatus('granted');
         
-        // Redirect to app after brief success message
+        // Redirect to intended page or default to swap after brief success message
         setTimeout(() => {
-          router.push('/swap');
+          const urlParams = new URLSearchParams(window.location.search);
+          const returnTo = urlParams.get('returnTo') || '/swap';
+          router.push(returnTo);
         }, 2000);
       } else {
         setAccessStatus('denied');
@@ -57,10 +59,32 @@ export default function LoginPage() {
     }
   }, [connected, publicKey, checkAccess]);
 
+  // Handle wallet disconnection on protected routes
+  useEffect(() => {
+    if (!connected) {
+      const currentPath = window.location.pathname;
+      const protectedPaths = ['/swap', '/admin', '/analytics'];
+      
+      // If user disconnects wallet while on a protected route, clear cookies
+      if (protectedPaths.some(path => currentPath.startsWith(path))) {
+        document.cookie = 'connected-wallet=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      }
+    }
+  }, [connected]);
+
   const handleDisconnect = () => {
     disconnect();
+    // Clear the authentication cookie
     document.cookie = 'connected-wallet=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     setAccessStatus(null);
+    
+    // If disconnecting from a protected route, redirect to homepage
+    const currentPath = window.location.pathname;
+    const protectedPaths = ['/swap', '/admin', '/analytics'];
+    
+    if (protectedPaths.some(path => currentPath.startsWith(path))) {
+      router.push('/');
+    }
   };
 
   return (
@@ -164,12 +188,22 @@ export default function LoginPage() {
                 <p className="text-gray-400 text-sm mb-4">
                   Your wallet is not on the beta allowlist. FrenzySwap is currently in private beta for invited users only.
                 </p>
-                <div className="bg-gray-900 rounded-lg p-3 text-left">
+                <div className="bg-gray-900 rounded-lg p-3 text-left mb-4">
                   <p className="text-gray-300 text-sm font-medium mb-2">Want beta access?</p>
                   <p className="text-gray-500 text-xs leading-relaxed">
                     Follow our social media for announcements about public launch and beta invitations.
                   </p>
                 </div>
+                
+                {/* Back to Homepage Button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => router.push('/')}
+                  className="w-full bg-gray-700 hover:bg-gray-600 text-white font-medium py-3 px-6 rounded-xl transition-colors"
+                >
+                  Back to Homepage
+                </motion.button>
               </motion.div>
             )}
           </div>

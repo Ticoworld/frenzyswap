@@ -1,21 +1,43 @@
-// src/middleware.ts - Complete Private Beta Gate
+// src/middleware.ts - Protect only /swap route for whitelisted users
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// 🌐 Only these routes are accessible without wallet verification
+// 🔒 Routes that require wallet verification (whitelist access)
+const PROTECTED_ROUTES = [
+  '/swap',
+  '/admin',
+  '/analytics'
+];
+
+// 🌐 Always public routes (no restrictions)
 const PUBLIC_ROUTES = [
   '/api',
-  '/login',          // Wallet connect page
-  '/_next',          // Next.js assets
+  '/login',
+  '/_next',
   '/favicon.ico',
   '/robots.txt',
   '/sitemap.xml',
   '/assets',
-  '/public'
+  '/public',
+  '/',              // Landing page
+  '/legal',         // Legal pages
+  '/dao',           // DAO page (coming soon)
+  '/staking',       // Staking page (coming soon)
+  '/nfts',          // NFTs page (coming soon)
+  '/ecosystem'      // Ecosystem page
 ];
 
 function isPublicRoute(pathname: string): boolean {
-  return PUBLIC_ROUTES.some(route => pathname.startsWith(route));
+  return PUBLIC_ROUTES.some(route => {
+    if (route === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(route);
+  });
+}
+
+function isProtectedRoute(pathname: string): boolean {
+  return PROTECTED_ROUTES.some(route => pathname.startsWith(route));
 }
 
 function verifyBetaAccess(request: NextRequest): boolean {
@@ -35,19 +57,24 @@ function verifyBetaAccess(request: NextRequest): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes
+  // Always allow public routes
   if (isPublicRoute(pathname)) {
     return NextResponse.next();
   }
 
-  // For all other routes, check beta access
-  const hasAccess = verifyBetaAccess(request);
-  
-  if (!hasAccess) {
-    // Redirect to login page
-    return NextResponse.redirect(new URL('/login', request.url));
+  // Only check access for protected routes
+  if (isProtectedRoute(pathname)) {
+    const hasAccess = verifyBetaAccess(request);
+    
+    if (!hasAccess) {
+      // Redirect to login page with return URL
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('returnTo', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
+  // Allow all other routes (website pages)
   return NextResponse.next();
 }
 
