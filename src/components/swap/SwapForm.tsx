@@ -46,6 +46,8 @@ export default function SwapForm() {
   const [txHash, setTxHash] = useState<string | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
   const [balanceLoading, setBalanceLoading] = useState(false);
+  const [toBalance, setToBalance] = useState<number | null>(null);
+  const [toBalanceLoading, setToBalanceLoading] = useState(false);
   const [showSwapPreview, setShowSwapPreview] = useState(false);
 
   // Generate shareable URL for current swap configuration
@@ -205,6 +207,57 @@ export default function SwapForm() {
     const interval = setInterval(fetchBalance, 30000);
     return () => clearInterval(interval);
   }, [publicKey, fromToken, connection]);
+
+  // Fetch balance for "to" token
+  useEffect(() => {
+    const fetchToBalance = async () => {
+      if (!publicKey || !toToken) {
+        setToBalance(null);
+        return;
+      }
+
+      try {
+        setToBalanceLoading(true);
+        let currentBalance: number;
+
+        if (toToken.symbol === 'SOL') {
+          const lamports = await connection.getBalance(publicKey);
+          currentBalance = fromSmallestUnit(BigInt(lamports), 9);
+        } else {
+          const tokenAccounts = await connection.getTokenAccountsByOwner(
+            publicKey,
+            { mint: new PublicKey(toToken.address) }
+          );
+
+          if (tokenAccounts.value.length > 0) {
+            const tokenAccountInfo = await connection.getParsedAccountInfo(
+              tokenAccounts.value[0].pubkey
+            );
+            if (tokenAccountInfo.value && (tokenAccountInfo.value.data as any).parsed) {
+              const parsedData = (tokenAccountInfo.value.data as any).parsed.info;
+              currentBalance = parseFloat(parsedData.tokenAmount.uiAmountString);
+            } else {
+              currentBalance = 0;
+            }
+          } else {
+            currentBalance = 0;
+          }
+        }
+        setToBalance(currentBalance);
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to fetch to token balance', error);
+        }
+        setToBalance(0);
+      } finally {
+        setToBalanceLoading(false);
+      }
+    };
+
+    fetchToBalance();
+    const interval = setInterval(fetchToBalance, 30000);
+    return () => clearInterval(interval);
+  }, [publicKey, toToken, connection]);
 
   useEffect(() => {
     if (fromToken && toToken && fromToken.address === toToken.address) {
@@ -398,6 +451,7 @@ export default function SwapForm() {
     setToAmount('');
     setQuote(null);
     setError(null);
+    // Note: We don't reset balances as they should persist for the selected tokens
   };
 
   const handleMaxClick = (percentage: number) => {
@@ -611,8 +665,18 @@ export default function SwapForm() {
                 />
               </div>
             </div>
-            <div className="mt-2 text-sm text-gray-400">
-              Balance: {connected ? '0.0' : '-'}
+            <div className="mt-2 text-sm">
+              {toBalanceLoading ? (
+                <BalanceSkeleton />
+              ) : toBalance !== null ? (
+                <span className="text-gray-400">
+                  Balance: {toBalance.toFixed(6)} {toToken?.symbol || ''}
+                </span>
+              ) : connected ? (
+                <span className="text-gray-400">Balance: 0.0</span>
+              ) : (
+                <span className="text-gray-400">Balance: -</span>
+              )}
             </div>
           </div>
 
