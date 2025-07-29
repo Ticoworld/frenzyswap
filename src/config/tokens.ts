@@ -7,6 +7,9 @@ export type Token = {
   logoURI: string;
   decimals: number;
   price?: number;
+  verified?: boolean; // Jupiter strict list verification
+  tags?: string[]; // Jupiter tags (community, verified, etc.)
+  isFromDexScreener?: boolean; // Flag for tokens from DexScreener (unverified)
 }; 
 
 export const MEME_TOKEN: Token = {
@@ -14,6 +17,8 @@ export const MEME_TOKEN: Token = {
   name: 'MemeFrenzy',
   symbol: 'MEME',
   logoURI: '/assets/tokens/meme.png',
-  decimals: 6  // MEME token has 6 decimals, not 9
+  decimals: 6,  // MEME token has 6 decimals, not 9
+  verified: true,
+  tags: ['verified', 'community']
 };
 

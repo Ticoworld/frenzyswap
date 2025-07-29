@@ -18,6 +18,7 @@ import { motion } from 'framer-motion';
 import { QuoteLoader, BalanceSkeleton, SwapPreviewSkeleton } from '@/components/ui/SkeletonLoader';
 import SwapConfirmation from './TransactionConfirmation';
 import NetworkStatus from '@/components/ui/NetworkStatus';
+import ErrorDisplay from '@/components/ui/ErrorDisplay';
 import { toast } from 'react-hot-toast';
 
 export default function SwapForm() {
@@ -748,39 +749,15 @@ export default function SwapForm() {
 
           {/* ERROR & RETRY */}
           {error && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm"
-              role="alert"
-              aria-live="polite"
-            >
-              <div className="flex flex-col items-center text-center space-y-3">
-                <div className="flex items-center space-x-2">
-                  <FaInfoCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
-                  <span className="font-medium">{error}</span>
-                </div>
-                {/* Only show retry button for network/API errors, not balance errors */}
-                {!error.includes('Insufficient') && !error.includes('No valid route') && (
-                  <button
-                    className="px-4 py-2 bg-yellow-500 text-black rounded-lg text-xs font-bold hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-                    onClick={() => {
-                      setError(null);
-                      setQuoteLoading(true);
-                      fetchQuote();
-                    }}
-                    aria-label="Retry fetching quote"
-                  >
-                    Try Again
-                  </button>
-                )}
-                {error.includes('Insufficient') && (
-                  <p className="text-xs text-gray-400 mt-1">
-                    Reduce the amount or add more {fromToken?.symbol} to your wallet
-                  </p>
-                )}
-              </div>
-            </motion.div>
+            <ErrorDisplay
+              error={error}
+              onRetry={() => {
+                setError(null);
+                setQuoteLoading(true);
+                fetchQuote();
+              }}
+              showRetry={true}
+            />
           )}
 
           {/* SWAP BUTTON */}

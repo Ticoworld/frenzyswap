@@ -7,6 +7,8 @@ import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import debounce from 'lodash/debounce';
 import TokenImage from '../ui/TokenImage';
+import TokenVerificationBadge from './TokenVerificationBadge';
+import QuickTokenWarning from './QuickTokenWarning';
 import { useTokenList } from '@/hooks/useTokenList';
 import { Token } from '@/config/tokens';
 
@@ -16,15 +18,48 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
   disabledTokens?: string[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [warningToken, setWarningToken] = useState<Token | null>(null);
+  const [searchValue, setSearchValue] = useState('');
   const { tokens, loading, error, rateLimitError, retry, setSearchQuery: originalSetSearchQuery } = useTokenList();
 
-  const debouncedSetSearchQuery = useMemo(() => debounce(originalSetSearchQuery, 300), [originalSetSearchQuery]);
+  const debouncedSetSearchQuery = useMemo(() => debounce((value: string) => {
+    originalSetSearchQuery(value);
+    setSearchValue(value);
+  }, 300), [originalSetSearchQuery]);
+  
   useEffect(() => () => debouncedSetSearchQuery.cancel(), [debouncedSetSearchQuery]);
 
+  // Clear search when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSearchValue('');
+      originalSetSearchQuery('');
+    }
+  }, [isOpen, originalSetSearchQuery]);
+
   const handleSelect = useCallback((token: Token) => {
-    onSelect(token);
-    setIsOpen(false);
+    // Check if token needs verification warning
+    const needsWarning = token.verified === false || token.isFromDexScreener === true;
+    
+    if (needsWarning) {
+      setWarningToken(token);
+    } else {
+      onSelect(token);
+      setIsOpen(false);
+    }
   }, [onSelect]);
+
+  const handleWarningConfirm = useCallback(() => {
+    if (warningToken) {
+      onSelect(warningToken);
+      setWarningToken(null);
+      setIsOpen(false);
+    }
+  }, [warningToken, onSelect]);
+
+  const handleWarningCancel = useCallback(() => {
+    setWarningToken(null);
+  }, []);
 
   const TokenRow = useCallback(({ index, style }: { index: number, style: React.CSSProperties }) => {
     const token = tokens[index];
@@ -41,9 +76,12 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
         aria-label={`Select ${token.symbol} (${token.name})${disabled ? ' - disabled' : ''}`}
         type="button"
       >
-        <TokenImage src={token.logoURI} alt={token.name} symbol={token.symbol} className="w-8 h-8 rounded-full" />
-        <div className="ml-3 text-left truncate">
-          <div className="font-medium text-white truncate">{token.symbol}</div>
+        <TokenImage src={token.logoURI} alt={token.name} symbol={token.symbol} address={token.address} className="w-8 h-8 rounded-full" />
+        <div className="ml-3 text-left truncate flex-1">
+          <div className="flex items-center space-x-2">
+            <span className="font-medium text-white truncate">{token.symbol}</span>
+            <TokenVerificationBadge token={token} size="sm" />
+          </div>
           <div className="text-sm text-gray-400 truncate">{token.name}</div>
         </div>
       </button>
@@ -61,8 +99,9 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
       >
         {selectedToken ? (
           <div className="flex items-center"> {/* Container for image and symbol */}
-            <TokenImage src={selectedToken.logoURI} alt={selectedToken.name} symbol={selectedToken.symbol} className="w-6 h-6 rounded-full mr-2" />
-            <span>{selectedToken.symbol}</span>
+            <TokenImage src={selectedToken.logoURI} alt={selectedToken.name} symbol={selectedToken.symbol} address={selectedToken.address} className="w-6 h-6 rounded-full mr-2" />
+            <span className="mr-2">{selectedToken.symbol}</span>
+            <TokenVerificationBadge token={selectedToken} size="sm" />
           </div>
         ) : (
           <span>Select Token</span>
@@ -94,7 +133,12 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
                 </Dialog.Title>
                 <input
                   placeholder="Search token by name or symbol"
-                  onChange={(e) => debouncedSetSearchQuery(e.target.value)}
+                  value={searchValue}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setSearchValue(value);
+                    debouncedSetSearchQuery(value);
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Escape') {
                       setIsOpen(false);
@@ -165,6 +209,16 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
           </div>
         </Dialog>
       </Transition>
+
+      {/* Quick Token Warning Modal */}
+      {warningToken && (
+        <QuickTokenWarning
+          token={warningToken}
+          isOpen={!!warningToken}
+          onConfirm={handleWarningConfirm}
+          onCancel={handleWarningCancel}
+        />
+      )}
     </div>
   );
 }

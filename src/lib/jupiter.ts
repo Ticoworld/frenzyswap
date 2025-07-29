@@ -127,6 +127,25 @@ export const getQuote = async (
     }
     
     if (err.response?.status === 400) {
+      const errorData = err.response?.data;
+      
+      // More specific error handling based on Jupiter's response
+      if (errorData?.error?.includes('insufficient liquidity')) {
+        throw new Error('Insufficient liquidity for this token pair. Try a smaller amount.');
+      }
+      if (errorData?.error?.includes('slippage tolerance exceeded')) {
+        throw new Error('Price impact too high. Increase slippage tolerance or reduce amount.');
+      }
+      if (errorData?.error?.includes('token not supported')) {
+        throw new Error('Token not supported by Jupiter. This token may be restricted or have limited liquidity.');
+      }
+      if (errorData?.error?.includes('amount too small')) {
+        throw new Error('Amount too small for swap. Minimum amount required.');
+      }
+      if (errorData?.error?.includes('amount too large')) {
+        throw new Error('Amount too large. Try reducing the swap amount.');
+      }
+      
       throw new Error('Invalid quote parameters. Please check token addresses and amount.');
     }
     if (err.response?.status === 404) {
@@ -269,6 +288,24 @@ export const executeSwap = async (
     if (err.response?.status === 400) {
       const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Invalid swap request parameters';
       console.error('Jupiter 400 error details:', err.response?.data);
+      
+      // More specific swap error handling
+      if (errorMsg.includes('insufficient liquidity')) {
+        throw new Error('Insufficient liquidity available. Try a smaller amount or different token pair.');
+      }
+      if (errorMsg.includes('slippage')) {
+        throw new Error('Transaction would exceed slippage tolerance. Increase slippage or try again.');
+      }
+      if (errorMsg.includes('price impact')) {
+        throw new Error('Price impact too high for this trade size. Consider reducing the amount.');
+      }
+      if (errorMsg.includes('market closed') || errorMsg.includes('trading halted')) {
+        throw new Error('Trading temporarily unavailable for this token pair.');
+      }
+      if (errorMsg.includes('insufficient balance')) {
+        throw new Error('Insufficient token balance for this swap.');
+      }
+      
       throw new Error(`Swap transaction build failed: ${errorMsg}`);
     }
     if (err.response?.status === 500) {
