@@ -1,8 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import WaitlistModal from './WaitlistModal';
 
 export default function RoadmapCTA() {
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+
   return (
     <section className="py-16 bg-gradient-to-r from-gray-800 to-gray-900">
       <div className="container mx-auto px-4 text-center">
@@ -11,14 +15,23 @@ export default function RoadmapCTA() {
           Be part of the meme token ecosystem that rewards participation and grows with every transaction.
         </p>
         <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-          <Link href="/swap" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg text-center transition duration-300">
+          <Link href="/login" className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg text-center transition duration-300">
             Start Swapping Now
           </Link>
-          <button className="bg-transparent border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black font-bold py-3 px-6 rounded-lg transition duration-300">
-            Learn About $MEME
+          <button 
+            onClick={() => setShowWaitlistModal(true)}
+            className="bg-transparent border-2 border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black font-bold py-3 px-6 rounded-lg transition duration-300"
+          >
+            Join Waitlist
           </button>
         </div>
       </div>
+
+      {/* Waitlist Modal */}
+      <WaitlistModal 
+        isOpen={showWaitlistModal} 
+        onClose={() => setShowWaitlistModal(false)} 
+      />
     </section>
   );
 }

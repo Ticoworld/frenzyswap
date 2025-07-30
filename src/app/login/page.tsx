@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { FiLock, FiCheck, FiX } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import WaitlistForm from '@/components/auth/WaitlistForm';
 
 export default function LoginPage() {
   const { publicKey, connected, disconnect } = useWallet();
@@ -182,18 +183,20 @@ export default function LoginPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-6"
               >
-                <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FiX className="text-red-500 text-3xl" />
+                <div className="w-16 h-16 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FiLock className="text-yellow-500 text-3xl" />
                 </div>
-                <p className="text-red-400 font-bold text-lg mb-2">Access Denied</p>
-                <p className="text-gray-400 text-sm mb-4">
-                  Your wallet is not on the beta allowlist. FrenzySwap is currently in private beta for invited users only.
+                <p className="text-yellow-400 font-bold text-lg mb-2">Beta Access Required</p>
+                <p className="text-gray-400 text-sm mb-6">
+                  FrenzySwap is currently in private beta. Join our waitlist to get early access when we expand!
                 </p>
-                <div className="bg-gray-900 rounded-lg p-3 text-left mb-4">
-                  <p className="text-gray-300 text-sm font-medium mb-2">Want beta access?</p>
-                  <p className="text-gray-500 text-xs leading-relaxed">
-                    Follow our social media for announcements about public launch and beta invitations.
-                  </p>
+                
+                {/* Waitlist Form */}
+                <div className="mb-6">
+                  <WaitlistForm 
+                    walletAddress={publicKey?.toBase58() || ''} 
+                    source="denied_access" 
+                  />
                 </div>
                 
                 {/* Back to Homepage Button */}

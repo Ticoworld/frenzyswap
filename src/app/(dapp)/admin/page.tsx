@@ -4,7 +4,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { FiBarChart , FiSettings, FiDatabase, FiShield } from 'react-icons/fi';
+import { FiBarChart , FiSettings, FiDatabase, FiShield, FiUsers } from 'react-icons/fi';
 
 // Admin wallet addresses from environment variables
 const getAdminWallets = () => {
@@ -99,6 +99,35 @@ export default function AdminDashboard() {
                 • Detailed swap records
                 <br />
                 • User metrics and trends
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Waitlist Management */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <Link 
+              href="/admin/waitlist"
+              className="block bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-yellow-500 transition-all hover:bg-gray-750"
+            >
+              <div className="flex items-center mb-4">
+                <div className="bg-yellow-500/20 w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                  <FiUsers className="text-2xl text-yellow-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-white">Waitlist Management</h3>
+                  <p className="text-gray-400">View and manage beta waitlist signups</p>
+                </div>
+              </div>
+              <div className="text-sm text-gray-500">
+                • Monitor waitlist entries
+                <br />
+                • Export user data
+                <br />
+                • Track signup sources
               </div>
             </Link>
           </motion.div>

@@ -1,10 +1,13 @@
 "use client";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { FiArrowDown, FiRefreshCw, FiDollarSign, FiZap } from "react-icons/fi";
+import WaitlistModal from "./WaitlistModal";
 
 export default function Hero() {
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-black min-h-screen flex items-center overflow-x-hidden">
       {/* Cosmic grid background */}
@@ -126,7 +129,7 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
           >
-            <Link href="/swap">
+            <Link href="/login">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -137,12 +140,13 @@ export default function Hero() {
               </motion.div>
             </Link>
             <motion.button
+              onClick={() => setShowWaitlistModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 border-yellow-500 border"
             >
               <FiDollarSign />
-              <span>How It Works</span>
+              <span>Join Waitlist</span>
             </motion.button>
           </motion.div>
 
@@ -195,6 +199,12 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Waitlist Modal */}
+      <WaitlistModal 
+        isOpen={showWaitlistModal} 
+        onClose={() => setShowWaitlistModal(false)} 
+      />
     </section>
   );
 }
