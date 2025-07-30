@@ -8,8 +8,10 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const JUPITER_BASE_URL = 'https://token.jup.ag';
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes cache duration
-const STRICT_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes for strict tokens
+// Multi-tier caching strategy for optimal performance
+const CORE_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours for core tokens
+const POPULAR_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours for popular tokens
+const STRICT_CACHE_DURATION = 2 * 60 * 60 * 1000; // 2 hours for strict tokens (mobile-friendly)
 let tokenCache: any[] = [];
 let cacheTimestamp = 0;
 
@@ -82,7 +84,7 @@ export async function GET(request: NextRequest) {
   // Return cached data immediately if available and fresh
   const cacheAge = Date.now() - cacheTimestamp;
   const isFullCache = tokenCache.length > 50000; // Check if we have the full token list
-  const cacheTimeout = isFullCache ? CACHE_DURATION : STRICT_CACHE_DURATION;
+  const cacheTimeout = isFullCache ? POPULAR_CACHE_DURATION : STRICT_CACHE_DURATION;
   
   if (tokenCache.length && cacheAge < cacheTimeout) {
     console.log(`[Token Fetch] Returning cached data: ${tokenCache.length} tokens (age: ${Math.round(cacheAge/1000/60)}min)`);
@@ -165,13 +167,60 @@ export async function GET(request: NextRequest) {
 
     let tokens;
     
-    // Strategy: Fetch both strict and all tokens, merge them with verification status
+    // 🚀 Mobile-Optimized Strategy: Core tokens first, then expand
     try {
-      console.log('[Token Fetch] Fetching tokens with verification data...');
+      console.log('[Token Fetch] 📱 Mobile-optimized fetch: trying /strict first...');
       
-      // Fetch strict tokens first (these are verified)
+      // Step 1: Fetch core verified tokens first (fast, small payload)
       const strictTokens = await fetchTokens('/strict');
-      console.log(`[Token Fetch] Got ${strictTokens.length} verified tokens from /strict`);
+      console.log(`[Token Fetch] ✅ Got ${strictTokens.length} verified tokens from /strict`);
+      
+      // If we have a decent core set, use it immediately and optionally expand later
+      if (strictTokens.length > 1000) {
+        tokens = strictTokens;
+        tokenCache = tokens;
+        cacheTimestamp = Date.now();
+        
+        console.log(`[Token Cache] 💾 Cached ${tokens.length} core tokens for immediate use`);
+        console.log(`[Token Cache] Cache timestamp: ${new Date(cacheTimestamp).toISOString()}`);
+        
+        // Return core tokens immediately for fast loading
+        const response = NextResponse.json(tokens);
+        
+        // Background: Try to fetch and merge with all tokens (don't wait for this)
+        setImmediate(async () => {
+          try {
+            console.log('[Token Fetch] 🔄 Background: Attempting to fetch full token list...');
+            const allTokens = await fetchTokens('/all');
+            console.log(`[Token Fetch] 🔄 Background: Got ${allTokens.length} total tokens from /all`);
+            
+            // Create a Set of verified token addresses for quick lookup
+            const verifiedAddresses = new Set(strictTokens.map(t => t.address));
+            
+            // Merge tokens, marking verification status
+            const mergedTokens = allTokens.map(token => ({
+              ...token,
+              verified: verifiedAddresses.has(token.address),
+              tags: verifiedAddresses.has(token.address) ? 
+                (strictTokens.find(t => t.address === token.address)?.tags || []) : 
+                token.tags
+            }));
+            
+            // Update cache with full list
+            tokenCache = mergedTokens;
+            cacheTimestamp = Date.now();
+            console.log(`[Token Fetch] 🔄 Background: Updated cache with ${mergedTokens.length} tokens`);
+            
+          } catch (bgError) {
+            console.log('[Token Fetch] 🔄 Background: Full fetch failed, keeping core tokens');
+          }
+        });
+        
+        return response;
+      }
+      
+      // If strict tokens are insufficient, try the full approach
+      console.log('[Token Fetch] Core tokens insufficient, trying full approach...');
       
       // Create a Set of verified token addresses for quick lookup
       const verifiedAddresses = new Set(strictTokens.map(t => t.address));

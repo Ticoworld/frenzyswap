@@ -15,7 +15,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaExchangeAlt, FaFire, FaInfoCircle, FaShare } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { QuoteLoader, BalanceSkeleton, SwapPreviewSkeleton } from '@/components/ui/SkeletonLoader';
+import { QuoteLoader, BalanceSkeleton, SwapPreviewSkeleton, TokenSelectorSkeleton } from '@/components/ui/SkeletonLoader';
 import SwapConfirmation from './TransactionConfirmation';
 import NetworkStatus from '@/components/ui/NetworkStatus';
 import ErrorDisplay from '@/components/ui/ErrorDisplay';
@@ -34,6 +34,8 @@ export default function SwapForm() {
 
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
+  const [fromTokenLoading, setFromTokenLoading] = useState(false);
+  const [toTokenLoading, setToTokenLoading] = useState(false);
   const [fromAmount, setFromAmount] = useState('');
   const [toAmount, setToAmount] = useState('');
   const [slippage, setSlippage] = useState(0.5);
@@ -101,63 +103,137 @@ export default function SwapForm() {
   };
 
   useEffect(() => {
-    if (tokens.length > 0 && !fromToken) {
-      // Prefer USDC as default input token for fee earning
+    // Check if URL parameters exist to avoid default token flash
+    const hasUrlParams = searchParams.get('inputMint') || searchParams.get('outputMint') || 
+                         searchParams.get('from') || searchParams.get('to');
+    
+    if (tokens.length > 0 && !fromToken && !hasUrlParams) {
+      // Only set defaults if no URL params exist
       const usdc = tokens.find(t => t.symbol === 'USDC');
       if (usdc) setFromToken(usdc);
     }
-    if (tokens.length > 0 && !toToken && MEME_TOKEN) {
+    if (tokens.length > 0 && !toToken && MEME_TOKEN && !hasUrlParams) {
       setToToken(MEME_TOKEN);
     }
-  }, [tokens, fromToken, toToken]);
+  }, [tokens, fromToken, toToken, searchParams]);
 
-  // Handle URL parameters for pre-filled swaps
+  // Smart token lookup function for unknown addresses
+  const findOrFetchToken = useCallback(async (address: string, isFromToken: boolean = true): Promise<Token | null> => {
+    // First, try to find in existing tokens
+    const existing = tokens.find(t => t.address === address);
+    if (existing) return existing;
+
+    // If not found and looks like a valid Solana address, try DexScreener
+    if (address.length >= 32 && /^[A-Za-z0-9]{32,}$/.test(address)) {
+      try {
+        // Set loading state
+        if (isFromToken) {
+          setFromTokenLoading(true);
+        } else {
+          setToTokenLoading(true);
+        }
+
+        console.log(`[SwapForm] 🔍 Unknown token ${address}, searching DexScreener...`);
+        const response = await fetch(`/api/tokens/search?q=${address}`);
+        if (response.ok) {
+          const token = await response.json();
+          console.log(`[SwapForm] ✅ Found token via DexScreener: ${token.symbol}`);
+          
+          // Add to global token list for future use (avoid repeated API calls)
+          const updatedTokens = [...tokens, token];
+          console.log(`[SwapForm] 📦 Added ${token.symbol} to local token cache`);
+          
+          return token;
+        }
+      } catch (error) {
+        console.log(`[SwapForm] ❌ DexScreener lookup failed for ${address}`);
+      } finally {
+        // Clear loading state
+        if (isFromToken) {
+          setFromTokenLoading(false);
+        } else {
+          setToTokenLoading(false);
+        }
+      }
+    }
+    
+    return null;
+  }, [tokens]);
+
+  // Handle URL parameters for pre-filled swaps with smart lookup
   useEffect(() => {
     if (tokens.length === 0) return;
 
-    const inputMint = searchParams.get('inputMint');
-    const outputMint = searchParams.get('outputMint'); 
-    const fromSymbol = searchParams.get('from');
-    const toSymbol = searchParams.get('to');
-    const amount = searchParams.get('amount');
+    const handleUrlParams = async () => {
+      const inputMint = searchParams.get('inputMint');
+      const outputMint = searchParams.get('outputMint'); 
+      const fromSymbol = searchParams.get('from');
+      const toSymbol = searchParams.get('to');
+      const amount = searchParams.get('amount');
 
-    // Handle inputMint parameter (Raydium-style)
-    if (inputMint && !fromToken) {
-      const token = tokens.find(t => t.address === inputMint);
-      if (token) {
-        setFromToken(token);
+      console.log(`[SwapForm] 🔗 Processing URL params: inputMint=${inputMint}, outputMint=${outputMint}`);
+
+      // Handle inputMint parameter with smart lookup (highest priority)
+      if (inputMint && !fromToken) {
+        const token = await findOrFetchToken(inputMint, true);
+        if (token) {
+          console.log(`[SwapForm] ✅ Set FROM token via inputMint: ${token.symbol}`);
+          setFromToken(token);
+        } else {
+          console.log(`[SwapForm] ⚠️ Could not find or fetch token: ${inputMint}`);
+          // Fallback to symbol if mint address fails
+          if (fromSymbol) {
+            const symbolToken = tokens.find(t => t.symbol.toLowerCase() === fromSymbol.toLowerCase());
+            if (symbolToken) {
+              console.log(`[SwapForm] 📝 Fallback to FROM symbol: ${symbolToken.symbol}`);
+              setFromToken(symbolToken);
+            }
+          }
+        }
+      } else if (fromSymbol && !fromToken && !inputMint) {
+        // Handle from parameter (symbol-based) only if no inputMint
+        const token = tokens.find(t => t.symbol.toLowerCase() === fromSymbol.toLowerCase());
+        if (token) {
+          console.log(`[SwapForm] 📝 Set FROM token via symbol: ${token.symbol}`);
+          setFromToken(token);
+        }
       }
-    }
 
-    // Handle outputMint parameter (Raydium-style)
-    if (outputMint && !toToken) {
-      const token = tokens.find(t => t.address === outputMint);
-      if (token) {
-        setToToken(token);
+      // Handle outputMint parameter with smart lookup (highest priority)
+      if (outputMint && !toToken) {
+        const token = await findOrFetchToken(outputMint, false);
+        if (token) {
+          console.log(`[SwapForm] ✅ Set TO token via outputMint: ${token.symbol}`);
+          setToToken(token);
+        } else {
+          console.log(`[SwapForm] ⚠️ Could not find or fetch token: ${outputMint}`);
+          // Fallback to symbol if mint address fails
+          if (toSymbol) {
+            const symbolToken = tokens.find(t => t.symbol.toLowerCase() === toSymbol.toLowerCase());
+            if (symbolToken) {
+              console.log(`[SwapForm] 📝 Fallback to TO symbol: ${symbolToken.symbol}`);
+              setToToken(symbolToken);
+            }
+          }
+        }
+      } else if (toSymbol && !toToken && !outputMint) {
+        // Handle to parameter (symbol-based) only if no outputMint
+        const token = tokens.find(t => t.symbol.toLowerCase() === toSymbol.toLowerCase());
+        if (token) {
+          console.log(`[SwapForm] 📝 Set TO token via symbol: ${token.symbol}`);
+          setToToken(token);
+        }
       }
-    }
 
-    // Handle from parameter (symbol-based)
-    if (fromSymbol && !fromToken) {
-      const token = tokens.find(t => t.symbol.toLowerCase() === fromSymbol.toLowerCase());
-      if (token) {
-        setFromToken(token);
+      // Handle amount parameter
+      if (amount && !fromAmount) {
+        console.log(`[SwapForm] 💰 Set amount from URL: ${amount}`);
+        setFromAmount(amount);
       }
-    }
+    };
 
-    // Handle to parameter (symbol-based)
-    if (toSymbol && !toToken) {
-      const token = tokens.find(t => t.symbol.toLowerCase() === toSymbol.toLowerCase());
-      if (token) {
-        setToToken(token);
-      }
-    }
-
-    // Handle amount parameter
-    if (amount && !fromAmount) {
-      setFromAmount(amount);
-    }
-  }, [tokens, searchParams, fromToken, toToken, fromAmount]);
+    handleUrlParams();
+  }, [tokens, searchParams, fromToken, toToken, fromAmount, findOrFetchToken]);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -579,11 +655,15 @@ export default function SwapForm() {
                 />
               </div>
               <div className="flex-shrink-0">
-                <TokenSelector
-                  selectedToken={fromToken ?? undefined}
-                  onSelect={setFromToken}
-                  disabledTokens={toToken ? [toToken.address] : []}
-                />
+                {fromTokenLoading ? (
+                  <TokenSelectorSkeleton />
+                ) : (
+                  <TokenSelector
+                    selectedToken={fromToken ?? undefined}
+                    onSelect={setFromToken}
+                    disabledTokens={toToken ? [toToken.address] : []}
+                  />
+                )}
               </div>
             </div>
             <div className="mt-2 text-sm">
@@ -659,11 +739,15 @@ export default function SwapForm() {
                 )}
               </div>
               <div className="flex-shrink-0">
-                <TokenSelector
-                  selectedToken={toToken ?? undefined}
-                  onSelect={setToToken}
-                  disabledTokens={fromToken ? [fromToken.address] : []}
-                />
+                {toTokenLoading ? (
+                  <TokenSelectorSkeleton />
+                ) : (
+                  <TokenSelector
+                    selectedToken={toToken ?? undefined}
+                    onSelect={setToToken}
+                    disabledTokens={fromToken ? [fromToken.address] : []}
+                  />
+                )}
               </div>
             </div>
             <div className="mt-2 text-sm">

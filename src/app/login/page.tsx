@@ -34,12 +34,13 @@ export default function LoginPage() {
         
         setAccessStatus('granted');
         
-        // Redirect to intended page or default to swap after brief success message
+        // Redirect to intended page or default to swap with minimal delay
         setTimeout(() => {
           const urlParams = new URLSearchParams(window.location.search);
           const returnTo = urlParams.get('returnTo') || '/swap';
+          console.log(`[Login] ✅ Access granted, redirecting to: ${returnTo}`);
           router.push(returnTo);
-        }, 2000);
+        }, 800); // Reduced from 2000ms to 800ms for faster UX
       } else {
         setAccessStatus('denied');
       }

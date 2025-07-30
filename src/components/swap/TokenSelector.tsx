@@ -20,7 +20,7 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
   const [isOpen, setIsOpen] = useState(false);
   const [warningToken, setWarningToken] = useState<Token | null>(null);
   const [searchValue, setSearchValue] = useState('');
-  const { tokens, loading, error, rateLimitError, retry, setSearchQuery: originalSetSearchQuery } = useTokenList();
+  const { tokens, loading, error, rateLimitError, retry, setSearchQuery: originalSetSearchQuery, searchFeedback } = useTokenList();
 
   const debouncedSetSearchQuery = useMemo(() => debounce((value: string) => {
     originalSetSearchQuery(value);
@@ -188,20 +188,76 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
                   )}
                 </div>
               ) : (
-                <div className="h-[400px] custom-scrollbar"> {/* Added custom-scrollbar class here */}
-                  <AutoSizer>
-                    {({ height, width }) => (
-                      <FixedSizeList
-                        height={height}
-                        width={width}
-                        itemCount={tokens.length}
-                        itemSize={72}
-                        overscanCount={10}
-                      >
-                        {TokenRow}
-                      </FixedSizeList>
-                    )}
-                  </AutoSizer>
+                <div className="h-[400px] custom-scrollbar">
+                  {/* Show search feedback when there are no results */}
+                  {searchFeedback && !searchFeedback.hasResults && searchFeedback.searchTerm && (
+                    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                      {searchFeedback.isSearching ? (
+                        <>
+                          <div className="animate-spin w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full mb-4"></div>
+                          <p className="text-gray-300 font-medium mb-2">
+                            {searchFeedback.message || 'Searching...'}
+                          </p>
+                          <p className="text-gray-500 text-sm">
+                            Looking for &ldquo;{searchFeedback.searchTerm}&rdquo;
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                          </div>
+                          <p className="text-gray-300 font-medium mb-2">No tokens found</p>
+                          <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
+                            {searchFeedback.message || `No results for &ldquo;${searchFeedback.searchTerm}&rdquo;`}
+                          </p>
+                          <button
+                            onClick={() => {
+                              setSearchValue('');
+                              originalSetSearchQuery('');
+                            }}
+                            className="mt-4 text-yellow-500 hover:text-yellow-400 text-sm underline"
+                          >
+                            Clear search
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Show token list when there are results */}
+                  {(!searchFeedback || searchFeedback.hasResults) && tokens.length > 0 && (
+                    <AutoSizer>
+                      {({ height, width }) => (
+                        <FixedSizeList
+                          height={height}
+                          width={width}
+                          itemCount={tokens.length}
+                          itemSize={72}
+                          overscanCount={10}
+                        >
+                          {TokenRow}
+                        </FixedSizeList>
+                      )}
+                    </AutoSizer>
+                  )}
+                  
+                  {/* Show empty state when no search is active but no tokens */}
+                  {(!searchFeedback || !searchFeedback.searchTerm) && tokens.length === 0 && !loading && (
+                    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                      <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                        </svg>
+                      </div>
+                      <p className="text-gray-300 font-medium mb-2">No tokens available</p>
+                      <p className="text-gray-500 text-sm">
+                        Unable to load token list. Please try again.
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
               </div>

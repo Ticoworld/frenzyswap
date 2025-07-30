@@ -51,6 +51,16 @@ export function useTokenList() {
   const [retryCount, setRetryCount] = useState(0);
   const [dexScreenerResults, setDexScreenerResults] = useState<Token[]>([]);
   const [searchingDexScreener, setSearchingDexScreener] = useState(false);
+  const [searchFeedback, setSearchFeedback] = useState<{
+    isSearching: boolean;
+    hasResults: boolean;
+    searchTerm: string;
+    message?: string;
+  }>({
+    isSearching: false,
+    hasResults: true,
+    searchTerm: '',
+  });
 
   // Load cache instantly on mount
   useEffect(() => {
@@ -137,51 +147,31 @@ export function useTokenList() {
     setRetryCount((c) => c + 1);
   };
 
-  // DexScreener fallback search function
+  // Enhanced DexScreener search using our API endpoint
   const searchDexScreener = async (query: string): Promise<Token[]> => {
+    if (!query || query.length < 32) return [];
+    
     try {
-      console.log(`[DexScreener] 🔍 Searching for: ${query}`);
-      const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${query}`);
+      console.log(`[DexScreener] 🔍 Searching via API for: ${query}`);
       
+      const response = await fetch(`/api/tokens/search?q=${encodeURIComponent(query)}`, {
+        cache: 'no-store',
+        signal: AbortSignal.timeout(10000), // 10 second timeout
+      });
+
       if (!response.ok) {
         console.log(`[DexScreener] ❌ API error: ${response.status}`);
         return [];
       }
-      
-      const data = await response.json();
-      
-      if (!data.pairs || data.pairs.length === 0) {
-        console.log(`[DexScreener] ❌ No pairs found for ${query}`);
-        return [];
-      }
 
-      // Extract unique tokens from pairs (avoiding duplicates)
-      const tokensMap = new Map<string, Token>();
+      const token = await response.json();
       
-      data.pairs.forEach((pair: any) => {
-        if (pair.chainId === 'solana' && pair.baseToken) {
-          const token = pair.baseToken;
-          if (token.address && token.symbol && token.name) {
-            tokensMap.set(token.address, {
-              address: token.address,
-              name: token.name,
-              symbol: token.symbol,
-              decimals: 9, // Default for most Solana tokens
-              logoURI: '/token-fallback.png', // Default logo
-              price: pair.priceUsd ? parseFloat(pair.priceUsd) : undefined,
-              verified: false, // DexScreener tokens are not verified
-              isFromDexScreener: true, // Flag to indicate source
-            });
-          }
-        }
-      });
-
-      const foundTokens = Array.from(tokensMap.values());
-      console.log(`[DexScreener] ✅ Found ${foundTokens.length} tokens:`, foundTokens.map(t => `${t.symbol} (${t.address})`));
+      console.log(`[DexScreener] ✅ Found token via API: ${token.symbol} (${token.name})`);
+      console.log(`[DexScreener] 🖼️ Logo URL: ${token.logoURI}`);
       
-      return foundTokens;
+      return [token];
     } catch (error) {
-      console.error('[DexScreener] Error:', error);
+      console.error('[DexScreener] API Error:', error);
       return [];
     }
   };
@@ -190,19 +180,36 @@ export function useTokenList() {
   useEffect(() => {
     if (!searchQuery) {
       setDexScreenerResults([]);
+      setSearchFeedback({
+        isSearching: false,
+        hasResults: true,
+        searchTerm: '',
+      });
       return;
     }
 
     const query = searchQuery.toLowerCase();
+    setSearchFeedback({
+      isSearching: true,
+      hasResults: false,
+      searchTerm: searchQuery,
+      message: 'Searching...'
+    });
+
     const jupiterResults = tokens.filter((t) =>
       t.symbol.toLowerCase().includes(query) || 
       t.name.toLowerCase().includes(query) ||
       t.address.toLowerCase().includes(query)
     );
 
-    // If we have Jupiter results, clear DexScreener results
+    // If we have Jupiter results, clear DexScreener results and update feedback
     if (jupiterResults.length > 0) {
       setDexScreenerResults([]);
+      setSearchFeedback({
+        isSearching: false,
+        hasResults: true,
+        searchTerm: searchQuery,
+      });
       return;
     }
 
@@ -212,12 +219,34 @@ export function useTokenList() {
     if (isContractAddress) {
       console.log(`[TokenList] 🔄 No Jupiter results for ${searchQuery}, trying DexScreener...`);
       setSearchingDexScreener(true);
+      setSearchFeedback({
+        isSearching: true,
+        hasResults: false,
+        searchTerm: searchQuery,
+        message: 'Searching DexScreener for unknown token...'
+      });
       
       // Debounced DexScreener search
       const debouncedSearch = debounce(async () => {
         const dexResults = await searchDexScreener(searchQuery.trim());
         setDexScreenerResults(dexResults);
         setSearchingDexScreener(false);
+        
+        // Update feedback based on results
+        if (dexResults.length > 0) {
+          setSearchFeedback({
+            isSearching: false,
+            hasResults: true,
+            searchTerm: searchQuery,
+          });
+        } else {
+          setSearchFeedback({
+            isSearching: false,
+            hasResults: false,
+            searchTerm: searchQuery,
+            message: `No token found for "${searchQuery}". Please check the contract address and try again.`
+          });
+        }
       }, 500);
       
       debouncedSearch();
@@ -227,8 +256,16 @@ export function useTokenList() {
         debouncedSearch.cancel();
       };
     } else {
-      // Not a contract address, clear DexScreener results
+      // Not a contract address, clear DexScreener results and show appropriate message
       setDexScreenerResults([]);
+      setSearchFeedback({
+        isSearching: false,
+        hasResults: false,
+        searchTerm: searchQuery,
+        message: query.length < 32 
+          ? `No tokens found for "${searchQuery}". Try searching by symbol (e.g., "SOL") or paste a 32+ character contract address.`
+          : `No tokens found for "${searchQuery}". Please check your search term and try again.`
+      });
     }
   }, [searchQuery, tokens]);
 
@@ -254,5 +291,6 @@ export function useTokenList() {
     retry,
     setSearchQuery,
     invalidateCache,
+    searchFeedback,
   };
 }

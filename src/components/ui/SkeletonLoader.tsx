@@ -1,31 +1,68 @@
 import { motion } from 'framer-motion';
 
+// Professional skeleton loader with shimmer effect
 export const TokenSelectorSkeleton = () => (
-  // animate-pulse for a subtle loading animation
-  <div className="animate-pulse flex items-center bg-yellow-500/20 rounded-full px-3 py-2">
-    <div className="bg-yellow-500/40 rounded-full w-6 h-6 mr-2" />
-    <div className="bg-yellow-500/40 h-4 w-16 rounded" />
-    {/* Using an SVG for the dropdown icon directly is fine, no need for motion for static part */}
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-    </svg>
+  <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 overflow-hidden relative">
+    <div className="flex items-center space-x-3">
+      {/* Token icon skeleton with shimmer */}
+      <div className="relative w-10 h-10 bg-gray-700 rounded-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+      </div>
+      
+      <div className="flex-1 space-y-2">
+        {/* Token symbol skeleton */}
+        <div className="relative h-5 bg-gray-700 rounded w-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+        </div>
+        {/* Token name skeleton */}
+        <div className="relative h-3 bg-gray-700 rounded w-32 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+        </div>
+      </div>
+      
+      {/* Dropdown arrow skeleton */}
+      <div className="relative w-5 h-5 bg-gray-700 rounded overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+      </div>
+    </div>
   </div>
 );
 
 export const TokenListSkeleton = () => (
-  <div className="space-y-2">
+  <div className="space-y-3">
     {[...Array(5)].map((_, i) => (
       <motion.div
         key={i}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: i * 0.1, duration: 0.5 }} // Added duration for smoother fade-in
-        className="flex items-center w-full p-3 bg-yellow-500/20 rounded-lg"
+        transition={{ delay: i * 0.1, duration: 0.5 }}
+        className="flex items-center w-full p-3 bg-gray-800 rounded-lg relative overflow-hidden"
       >
-        <div className="bg-yellow-500/40 rounded-full w-8 h-8" />
-        <div className="ml-3">
-          <div className="bg-yellow-500/40 h-4 w-20 rounded mb-1" /> {/* Slightly wider for text */}
-          <div className="bg-yellow-500/40 h-3 w-32 rounded" /> {/* Slightly wider for text */}
+        {/* Token icon skeleton */}
+        <div className="relative w-8 h-8 bg-gray-700 rounded-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+        </div>
+        
+        <div className="ml-3 flex-1 space-y-2">
+          {/* Token symbol */}
+          <div className="relative h-4 w-20 bg-gray-700 rounded overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+          </div>
+          {/* Token name */}
+          <div className="relative h-3 w-32 bg-gray-700 rounded overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+          </div>
+        </div>
+        
+        <div className="text-right space-y-2">
+          {/* Price */}
+          <div className="relative h-3 w-16 bg-gray-700 rounded overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+          </div>
+          {/* Balance */}
+          <div className="relative h-3 w-20 bg-gray-700 rounded overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/30 to-transparent animate-shimmer" />
+          </div>
         </div>
       </motion.div>
     ))}
