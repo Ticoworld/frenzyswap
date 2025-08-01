@@ -54,26 +54,6 @@ export default function AdminDashboard() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Phase 2 Status Banner */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="md:col-span-2 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl p-4"
-          >
-            <div className="flex items-center">
-              <div className="bg-yellow-500/20 w-8 h-8 rounded-full flex items-center justify-center mr-3">
-                <span className="text-yellow-500 text-lg">⚡</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-yellow-500">Phase 2: Analytics System</h3>
-                <p className="text-yellow-400/80 text-sm">
-                  Analytics system is ready and waiting for deployment. Configure Supabase to activate.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
           {/* Analytics */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

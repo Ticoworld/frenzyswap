@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast'; // ✅ Import toast system
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+
   useEffect(() => {
     const preloadAssets = [
       '/assets/tokens/sol.png',

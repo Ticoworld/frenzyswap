@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import PlatformStats from '@/components/common/PlatformStats';
 import { FiCalendar, FiFilter, FiDownload, FiRefreshCw, FiLock } from 'react-icons/fi';
 
@@ -137,8 +138,18 @@ export default function AnalyticsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-white mb-2">Analytics Dashboard</h1>
-          <p className="text-gray-400">Monitor FrenzySwap platform performance and swap activity</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">Analytics Dashboard</h1>
+              <p className="text-gray-400">Monitor FrenzySwap platform performance and swap activity</p>
+            </div>
+            <Link 
+              href="/admin"
+              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            >
+              ← Back to Admin
+            </Link>
+          </div>
         </motion.div>
 
         {/* Platform Stats */}
