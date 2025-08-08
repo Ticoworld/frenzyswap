@@ -10,6 +10,7 @@ export type Token = {
   verified?: boolean; // Jupiter strict list verification
   tags?: string[]; // Jupiter tags (community, verified, etc.)
   isFromDexScreener?: boolean; // Flag for tokens from DexScreener (unverified)
+  isJupiterFallback?: boolean; // Flag for tokens found via Jupiter fallback but not in verified lists
 }; 
 
 export const MEME_TOKEN: Token = {

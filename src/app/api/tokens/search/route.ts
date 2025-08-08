@@ -70,7 +70,84 @@ export async function GET(request: NextRequest) {
     const data = await response.json();
     
     if (!data.pairs || data.pairs.length === 0) {
-      console.log(`[Token Search] ❌ No pairs found for ${query}`);
+      console.log(`[Token Search] ❌ No pairs found in DexScreener for ${query}`);
+      console.log(`[Token Search] 🔄 Trying Jupiter direct lookup...`);
+      
+      // Fallback: Try Jupiter direct quote to verify token exists
+      try {
+        const jupiterResponse = await fetch(
+          `https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=${query}&amount=1000000&slippageBps=50`,
+          {
+            headers: {
+              'Accept': 'application/json',
+            },
+            signal: AbortSignal.timeout(5000),
+          }
+        );
+
+        if (jupiterResponse.ok) {
+          const jupiterData = await jupiterResponse.json();
+          if (jupiterData.outputMint === query) {
+            console.log(`[Token Search] ✅ Token verified via Jupiter, fetching metadata...`);
+            
+            // Try to get token metadata from Solana
+            let tokenMetadata = {
+              symbol: `TOKEN_${query.slice(0, 8)}`,
+              name: `Token ${query.slice(0, 8)}...${query.slice(-4)}`,
+              decimals: 6,
+              logoURI: `/token-fallback.png`,
+            };
+
+            try {
+              // Try Jupiter's token list API for metadata
+              const metadataResponse = await fetch(
+                `https://token.jup.ag/strict`,
+                { signal: AbortSignal.timeout(3000) }
+              );
+              
+              if (metadataResponse.ok) {
+                const allTokens = await metadataResponse.json();
+                const tokenInfo = allTokens.find((t: any) => t.address === query);
+                
+                if (tokenInfo) {
+                  console.log(`[Token Search] 📝 Found metadata: ${tokenInfo.symbol} - ${tokenInfo.name}`);
+                  tokenMetadata = {
+                    symbol: tokenInfo.symbol || tokenMetadata.symbol,
+                    name: tokenInfo.name || tokenMetadata.name,
+                    decimals: tokenInfo.decimals || tokenMetadata.decimals,
+                    logoURI: tokenInfo.logoURI || tokenMetadata.logoURI,
+                  };
+                }
+              }
+            } catch (metaError) {
+              console.log(`[Token Search] ⚠️ Metadata fetch failed, using fallback`);
+            }
+            
+            // Create enhanced token entry
+            const fallbackToken = {
+              address: query,
+              symbol: tokenMetadata.symbol,
+              name: tokenMetadata.name,
+              decimals: tokenMetadata.decimals,
+              logoURI: tokenMetadata.logoURI,
+              tags: ['jupiter-supported', 'unverified'],
+              verified: false, // Explicitly mark as unverified
+              isFromDexScreener: false,
+              isJupiterFallback: true, // New flag for Jupiter fallback tokens
+              daily_volume: 0,
+              freeze_authority: null,
+              mint_authority: null,
+            };
+
+            // Cache the result
+            TOKEN_SEARCH_CACHE.set(cacheKey, { data: fallbackToken, timestamp: Date.now() });
+            return NextResponse.json(fallbackToken);
+          }
+        }
+      } catch (jupiterError) {
+        console.log(`[Token Search] ❌ Jupiter lookup failed:`, jupiterError);
+      }
+      
       return NextResponse.json({ error: 'Token not found' }, { status: 404 });
     }
 

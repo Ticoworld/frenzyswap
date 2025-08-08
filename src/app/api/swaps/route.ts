@@ -49,8 +49,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Enhance records with from_token_mint and to_token_mint
+    const enhancedRecords = (records || []).map((rec) => {
+      let from_token_mint, to_token_mint;
+      try {
+        if (rec.route_plan) {
+          const plan = typeof rec.route_plan === 'string' ? JSON.parse(rec.route_plan) : rec.route_plan;
+          if (Array.isArray(plan) && plan.length > 0) {
+            from_token_mint = plan[0]?.swapInfo?.inputMint;
+            to_token_mint = plan[plan.length - 1]?.swapInfo?.outputMint;
+          }
+        }
+      } catch (e) {
+        // ignore parse errors
+      }
+      return {
+        ...rec,
+        from_token_mint,
+        to_token_mint,
+      };
+    });
     return NextResponse.json({
-      records: records || [],
+      records: enhancedRecords,
       total: count || 0,
       page,
       limit,

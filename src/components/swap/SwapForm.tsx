@@ -476,16 +476,21 @@ export default function SwapForm() {
     try {
       const tx = await performSwap(quote, publicKey.toString(), referralAccount, connection);
       setTxHash(tx);
-      
-      // 📊 Log swap data for analytics
+
+      // 📊 Log swap data for analytics with real USD prices
       try {
-        // Calculate USD values (you can improve this with real price feeds)
-        const estimatedFromUsdValue = fromAmountNum * (fromToken.symbol === 'USDC' ? 1 : 
-                                      fromToken.symbol === 'SOL' ? 100 : // rough SOL price
-                                      1); // fallback
-        const estimatedToUsdValue = parseFloat(toAmount) * (toToken.symbol === 'USDC' ? 1 : 
-                                    toToken.symbol === 'SOL' ? 100 : // rough SOL price
-                                    1); // fallback
+        // Dynamically import fetchTokenPrices to avoid circular import
+        const { fetchTokenPrices } = await import('@/lib/fetchTokenPrices');
+        // Only fetch prices for fromToken and toToken
+        const mints = [fromToken.address, toToken.address];
+        const prices = await fetchTokenPrices(mints);
+        const fromTokenPrice = prices.find(p => p.mint === fromToken.address)?.price || 0;
+        const toTokenPrice = prices.find(p => p.mint === toToken.address)?.price || 0;
+
+        const fromUsdValue = fromAmountNum * fromTokenPrice;
+        const toUsdValue = parseFloat(toAmount) * toTokenPrice;
+        // Platform fee is always in fromToken, so use fromTokenPrice
+        const feesUsdValue = memeFee * fromTokenPrice;
 
         await fetch('/api/log-swap', {
           method: 'POST',
@@ -496,17 +501,19 @@ export default function SwapForm() {
             toToken: toToken.symbol,
             fromAmount: fromAmountNum,
             toAmount: parseFloat(toAmount),
-            fromUsdValue: estimatedFromUsdValue,
-            toUsdValue: estimatedToUsdValue,
-            feesPaid: memeFee + referralFee,
-            feesUsdValue: (memeFee + referralFee) * 100, // rough estimate
+            fromUsdValue,
+            toUsdValue,
+            feesPaid: memeFee,
+            feesUsdValue,
             signature: tx,
             blockTime: Math.floor(Date.now() / 1000),
             jupiterFee: referralFee,
             platformFee: memeFee,
             memeBurned: memeFee, // MEME tokens burned as fees
             slippage: slippage / 100,
-            routePlan: JSON.stringify(quote?.routePlan || {})
+            routePlan: JSON.stringify(quote?.routePlan || {}),
+            fee_token_symbol: fromToken.symbol,
+            fee_token_mint: fromToken.address
           })
         });
       } catch (logError) {

@@ -1,7 +1,9 @@
 // src/app/(dapp)/analytics/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { fetchTokenPrices, TokenPrice } from '@/lib/fetchTokenPrices';
+import { useVisitorStats } from '@/hooks/useVisitorStats';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -21,6 +23,12 @@ interface SwapRecord {
   signature: string;
   created_at: string;
   meme_burned?: string;
+  fee_token_symbol?: string;
+  fee_token_mint?: string;
+  fees_paid?: string;
+  from_token_mint?: string;
+  to_token_mint?: string;
+// ...existing code...
 }
 
 // Founder/Developer wallet addresses that can access analytics
@@ -36,12 +44,15 @@ const getAuthorizedWallets = () => {
 };
 
 export default function AnalyticsPage() {
+  // Visitor stats (24h by default)
+  const { stats: visitorStats, loading: visitorStatsLoading } = useVisitorStats('24h');
   const { publicKey, connected } = useWallet();
   const [swapRecords, setSwapRecords] = useState<SwapRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [tokenPrices, setTokenPrices] = useState<{ [mint: string]: number | null }>({});
   const recordsPerPage = 20;
 
   // Check if current wallet is authorized for analytics
@@ -77,11 +88,40 @@ export default function AnalyticsPage() {
     }
   };
 
+  // Fetch swap records and then fetch token prices for all unique mints
   useEffect(() => {
-    if (isAuthorized) {
-      fetchSwapRecords();
-    }
+    if (!isAuthorized) return;
+    const load = async () => {
+      await fetchSwapRecords();
+    };
+    load();
   }, [isAuthorized]);
+
+  // Collect all unique mints from swap records
+  const allMints = useMemo(() => {
+    const mints = new Set<string>();
+    swapRecords.forEach((rec) => {
+      if (rec.from_token_mint) mints.add(rec.from_token_mint);
+      if (rec.to_token_mint) mints.add(rec.to_token_mint);
+      if (rec.fee_token_mint) mints.add(rec.fee_token_mint);
+    });
+    return Array.from(mints).filter(Boolean);
+  }, [swapRecords]);
+
+  // Fetch token prices for all unique mints
+  useEffect(() => {
+    if (allMints.length === 0) return;
+    let cancelled = false;
+    fetchTokenPrices(allMints).then((prices) => {
+      if (cancelled) return;
+      const priceMap: { [mint: string]: number | null } = {};
+      prices.forEach(({ mint, price }) => {
+        priceMap[mint] = price;
+      });
+      setTokenPrices(priceMap);
+    });
+    return () => { cancelled = true; };
+  }, [allMints.join(',')]);
 
   // If not authorized, show access denied
   if (!isAuthorized) {
@@ -108,11 +148,19 @@ export default function AnalyticsPage() {
     );
   }
 
-  const formatCurrency = (value: string | null) => {
-    if (!value || value === '0') return '-';
-    const num = parseFloat(value);
-    if (num < 0.01) return '<$0.01';
-    return `$${num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  // Helper to format USD value from token amount and mint
+  const formatUsdValue = (amount: string | number | null | undefined, mint: string | undefined) => {
+    if (!amount || !mint || !tokenPrices[mint]) return '-';
+    const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+    if (isNaN(num) || num === 0) return '-';
+    const usd = num * (tokenPrices[mint] || 0);
+    if (usd < 0.00000001) return '<$0.00000001';
+    // Show more decimals for small values
+    if (usd < 0.01) {
+      return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 8 })}`;
+    }
+    return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const formatTokenAmount = (amount: string, decimals: number = 6) => {
@@ -152,14 +200,102 @@ export default function AnalyticsPage() {
           </div>
         </motion.div>
 
-        {/* Platform Stats */}
+        {/* Dynamic Platform Stats (calculated from swapRecords and live prices) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <PlatformStats showTitle={false} />
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            {/* Visitor Stats: Page Views (24h) */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-pink-500 text-3xl font-bold mb-2">
+                {visitorStatsLoading ? '...' : (visitorStats?.totalPageViews ?? '-')}
+              </div>
+              <div className="text-gray-400 text-sm">Visits (24h)</div>
+            </div>
+            {/* Visitor Stats: Unique Visitors (24h) */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-pink-400 text-3xl font-bold mb-2">
+                {visitorStatsLoading ? '...' : (visitorStats?.uniqueVisitors ?? '-')}
+              </div>
+              <div className="text-gray-400 text-sm">Unique Visitors (24h)</div>
+            </div>
+            {/* Visitor Stats: Avg. Time Spent (24h) */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-cyan-400 text-3xl font-bold mb-2">
+                {visitorStatsLoading
+                  ? '...'
+                  : (visitorStats?.averageTimeSpent != null
+                      ? `${Math.round(visitorStats.averageTimeSpent)}s`
+                      : '-')}
+              </div>
+              <div className="text-gray-400 text-sm">Avg. Time Spent (24h)</div>
+            </div>
+            {/* Total Volume */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-green-500 text-3xl font-bold mb-2">
+                {(() => {
+                  const total = swapRecords.reduce((sum, rec) => {
+                    const mint = rec.from_token_mint;
+                    const amt = parseFloat(rec.from_amount);
+                    const price = mint ? (tokenPrices[mint] ?? 0) : 0;
+                    return sum + (amt * price);
+                  }, 0);
+                  return total > 0 ? `$${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : '-';
+                })()}
+              </div>
+              <div className="text-gray-400 text-sm">Total Volume</div>
+            </div>
+            {/* Total Swaps */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-blue-500 text-3xl font-bold mb-2">
+                {swapRecords.length.toLocaleString()}
+              </div>
+              <div className="text-gray-400 text-sm">Total Swaps</div>
+            </div>
+            {/* MEME Burned */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-yellow-500 text-3xl font-bold mb-2">
+                {(() => {
+                  const total = swapRecords.reduce((sum, rec) => sum + (parseFloat(rec.meme_burned || '0') || 0), 0);
+                  return total > 0 ? total.toLocaleString(undefined, { maximumFractionDigits: 4 }) : '-';
+                })()}
+              </div>
+              <div className="text-gray-400 text-sm">MEME Burned</div>
+            </div>
+            {/* Platform Earnings */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              {(() => {
+                  const total = swapRecords.reduce((sum, rec) => {
+                    const mint = rec.fee_token_mint;
+                    const amt = parseFloat(rec.fees_paid || '0');
+                    const price = mint ? (tokenPrices[mint] ?? 0) : 0;
+                    return sum + (amt * price);
+                  }, 0);
+                if (total > 0 && total < 0.01) {
+                  return (
+                    <div className="text-purple-500 text-md font-bold mb-2">${total.toLocaleString(undefined, { minimumFractionDigits: 6, maximumFractionDigits: 8 })}</div>
+                  );
+                }
+                return (
+                  <div className="text-purple-500 text-3xl font-bold mb-2">{total > 0 ? `$${total.toLocaleString(undefined, { maximumFractionDigits: 2 })}` : '-'}</div>
+                );
+              })()}
+              <div className="text-gray-400 text-sm">Platform Earnings</div>
+            </div>
+            {/* Unique Wallets */}
+            <div className="bg-gray-800 rounded-xl p-6 flex flex-col items-center border border-gray-700">
+              <div className="text-indigo-500 text-3xl font-bold mb-2">
+                {(() => {
+                  const unique = new Set(swapRecords.map(r => r.wallet_address));
+                  return unique.size;
+                })()}
+              </div>
+              <div className="text-gray-400 text-sm">Unique Wallets</div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Recent Swaps */}
@@ -215,10 +351,16 @@ export default function AnalyticsPage() {
                         Amount
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                        USD Value
+                        Spent (USD)
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        Received (USD)
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         Fees
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        Fee Token
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                         MEME Burned
@@ -255,10 +397,38 @@ export default function AnalyticsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                          {formatCurrency(record.from_usd_value)}
+                          {/* Spent (USD): from_amount * from_token_mint price */}
+                          {formatUsdValue(record.from_amount, record.from_token_mint)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                          {formatCurrency(record.fees_usd_value)}
+                          {/* Received (USD): to_amount * to_token_mint price */}
+                          {formatUsdValue(record.to_amount, record.to_token_mint)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {/* Fees: show amount, symbol, and USD value if available */}
+                          {record.fees_paid && record.fee_token_symbol ? (
+                            <>
+                              {parseFloat(record.fees_paid).toLocaleString(undefined, { maximumFractionDigits: 6 })} {record.fee_token_symbol}
+                              <span className="text-xs text-gray-500 ml-1">
+                                ({formatUsdValue(record.fees_paid, record.fee_token_mint)})
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-gray-500">-</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {/* Fee Token column: symbol with mint as tooltip if available */}
+                          {record.fee_token_symbol ? (
+                            <span title={record.fee_token_mint || ''} className="cursor-help">
+                              {record.fee_token_symbol}
+                              {record.fee_token_mint ? (
+                                <span className="text-xs text-gray-500 ml-1">({truncateAddress(record.fee_token_mint)})</span>
+                              ) : null}
+                            </span>
+                          ) : (
+                            <span className="text-gray-500">-</span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-yellow-400">
                           {record.meme_burned ? formatTokenAmount(record.meme_burned) : '-'}

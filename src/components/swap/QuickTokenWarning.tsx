@@ -54,7 +54,7 @@ export default function QuickTokenWarning({
                       Unverified Token
                     </Dialog.Title>
                     <p className="text-sm text-gray-400">
-                      {token.symbol} • Not on Jupiter&apos;s verified list
+                      {token.symbol} • {token.isJupiterFallback ? 'Not in verified lists' : 'Not on Jupiter\'s verified list'}
                     </p>
                   </div>
                 </div>
@@ -62,7 +62,11 @@ export default function QuickTokenWarning({
                 {/* Quick Risk Summary */}
                 <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-4">
                   <p className="text-sm text-yellow-200">
-                    ⚠️ This token may have limited liquidity or higher risks.
+                    {token.isJupiterFallback ? (
+                      <>⚠️ This token is swappable on Jupiter but not in their verified token lists. Exercise extra caution.</>
+                    ) : (
+                      <>⚠️ This token may have limited liquidity or higher risks.</>
+                    )}
                   </p>
                 </div>
 

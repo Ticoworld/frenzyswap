@@ -39,7 +39,10 @@ export default function TokenSelector({ selectedToken, onSelect, disabledTokens 
 
   const handleSelect = useCallback((token: Token) => {
     // Check if token needs verification warning
-    const needsWarning = token.verified === false || token.isFromDexScreener === true;
+    const needsWarning = token.verified === false || 
+                        token.isFromDexScreener === true || 
+                        token.isJupiterFallback === true ||
+                        token.tags?.includes('unverified');
     
     if (needsWarning) {
       setWarningToken(token);

@@ -14,7 +14,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    
+    // Debug: log incoming analytics payload
+    console.log('[log-swap] Incoming body:', JSON.stringify(body));
     const {
       walletAddress,
       fromToken,
@@ -31,7 +32,9 @@ export async function POST(request: NextRequest) {
       platformFee,
       memeBurned,
       slippage,
-      routePlan
+      routePlan,
+      fee_token_symbol,
+      fee_token_mint
     } = body
 
     // Validate required fields
@@ -59,7 +62,9 @@ export async function POST(request: NextRequest) {
       platform_fee: parseFloat(platformFee) || null,
       meme_burned: parseFloat(memeBurned) || null,
       slippage: parseFloat(slippage) || null,
-      route_plan: routePlan || null
+      route_plan: routePlan || null,
+      fee_token_symbol: fee_token_symbol || null,
+      fee_token_mint: fee_token_mint || null
     }
 
     // Insert into Supabase

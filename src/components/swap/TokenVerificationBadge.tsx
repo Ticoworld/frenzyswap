@@ -24,6 +24,19 @@ export default function TokenVerificationBadge({ token, size = 'sm' }: TokenVeri
     );
   }
   
+  // Jupiter fallback token - swappable but not in verified lists
+  if (token.isJupiterFallback) {
+    const iconSize = size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6';
+    return (
+      <div 
+        className="inline-flex items-center"
+        title="Jupiter-supported but unverified token"
+      >
+        <ExclamationTriangleIcon className={`${iconSize} text-orange-500`} />
+      </div>
+    );
+  }
+  
   if (isFromDexScreener) {
     const iconSize = size === 'sm' ? 'h-4 w-4' : size === 'md' ? 'h-5 w-5' : 'h-6 w-6';
     return (
