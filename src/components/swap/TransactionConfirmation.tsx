@@ -38,16 +38,16 @@ export default function SwapConfirmation({
           <FaCheck className="text-green-500 text-2xl" />
         </div>
         <h3 className="text-xl font-bold mb-1">Swap Completed!</h3>
-        <p className="text-gray-400 text-sm">Your transaction was successful</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">Your transaction was successful</p>
       </div>
 
       <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 mb-6">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-gray-400">From</span>
+          <span className="text-gray-500 dark:text-gray-400">From</span>
           <div className="text-right">
             <div className="font-medium">{fromAmount} {fromToken?.symbol}</div>
             {fromToken && (
-              <div className="text-xs text-gray-400 flex items-center justify-end">
+              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-end">
                 <Image 
                   src={fromToken.logoURI} 
                   alt={fromToken.name} 
@@ -66,11 +66,11 @@ export default function SwapConfirmation({
         </div>
 
         <div className="flex justify-between items-center">
-          <span className="text-gray-400">To</span>
+          <span className="text-gray-500 dark:text-gray-400">To</span>
           <div className="text-right">
             <div className="font-medium">{toAmount} {toToken?.symbol}</div>
             {toToken && (
-              <div className="text-xs text-gray-400 flex items-center justify-end">
+              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center justify-end">
                 <Image 
                   src={toToken.logoURI} 
                   alt={toToken.name} 
@@ -87,7 +87,7 @@ export default function SwapConfirmation({
 
       <div className="bg-gray-800 rounded-xl p-4 border border-gray-700 mb-6">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-gray-400">Transaction</span>
+          <span className="text-gray-500 dark:text-gray-400">Transaction</span>
           <a 
             href={explorerUrl} 
             target="_blank" 

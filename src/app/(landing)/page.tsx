@@ -9,6 +9,8 @@ import Roadmap from '@/components/landing/Roadmap';
 import Partners from '@/components/landing/Partners';
 import RoadmapCTA from '@/components/landing/RoadmapCTA';
 import PlatformStats from '@/components/common/PlatformStats';
+import Trending from '@/components/landing/Trending';
+import PartnerHighlights from '@/components/landing/PartnerHighlights';
 
 export default function Home() {
   return (
@@ -16,6 +18,8 @@ export default function Home() {
       <Hero />
       <ValueProps />
       <PlatformStats className="py-12 px-4 max-w-7xl mx-auto" />
+  <Trending />
+  <PartnerHighlights />
       <HowItWorks />
       <Ecosystem />
       <Tokenomics />

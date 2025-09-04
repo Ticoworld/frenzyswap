@@ -4,7 +4,7 @@ import { FiDollarSign, FiShoppingCart, FiZap, FiTrendingUp } from 'react-icons/f
 import { motion } from 'framer-motion';
 export default function ValueProps() {
   return (
-    <section className="min-h-screen py-16 bg-gray-800 flex items-center relative overflow-hidden">
+    <section className="min-h-screen py-16 bg-gray-100 dark:bg-gray-800 flex items-center relative overflow-hidden">
       {/* Value-Focused Cosmic Background */}
       <div className="absolute inset-0 z-0">
         {/* Financial/value cosmic grid */}
@@ -86,7 +86,7 @@ export default function ValueProps() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             How <span className="text-yellow-500">FrenzySwap</span> Powers $MEME
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Tokenomics designed to reward holders and create sustainable growth
           </p>
         </motion.div>
@@ -124,13 +124,13 @@ export default function ValueProps() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br via-gray-800 to-gray-900 rounded-2xl border border-gray-700 p-6 text-center"
+              className="bg-gradient-to-br from-white to-gray-50 dark:via-gray-800 dark:to-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 text-center shadow-lg"
             >
               <div className={`bg-gradient-to-r ${item.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6`}>
                 {item.icon}
               </div>
               <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-              <p className="text-gray-300 text-sm">{item.description}</p>
+              <p className="text-gray-600 dark:text-gray-300 text-sm">{item.description}</p>
             </motion.div>
           ))}
         </div>
@@ -140,7 +140,7 @@ export default function ValueProps() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-16 bg-gradient-to-r from-gray-800 to-gray-900 rounded-2xl border border-yellow-500/30 p-8"
+          className="mt-16 bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl border border-yellow-500/30 p-8 shadow-lg"
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
             <div className="md:col-span-2">
@@ -150,7 +150,7 @@ export default function ValueProps() {
                 </div>
                 <h3 className="text-2xl font-bold">Deflationary Engine</h3>
               </div>
-              <p className="text-gray-300 mb-6">
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Every swap fuels the $MEME ecosystem, creating a self-sustaining value loop
               </p>
               <div className="flex items-center text-yellow-500">
@@ -158,12 +158,12 @@ export default function ValueProps() {
                 <span>Increasing token value with each transaction</span>
               </div>
             </div>
-            <div className="bg-gray-700/50 rounded-xl p-6">
+            <div className="bg-gray-100/50 dark:bg-gray-700/50 rounded-xl p-6">
               <div className="flex justify-between items-center mb-4">
-                <div className="text-sm text-gray-400">Total Burned</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">Total Burned</div>
                 <div className="text-yellow-500 font-bold">5.2M $MEME</div>
               </div>
-              <div className="h-3 bg-gray-600 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full overflow-hidden">
                 <motion.div 
                   className="h-full bg-gradient-to-r from-yellow-500 to-yellow-400 rounded-full"
                   initial={{ width: 0 }}
@@ -172,7 +172,7 @@ export default function ValueProps() {
                   viewport={{ once: true }}
                 ></motion.div>
               </div>
-              <div className="text-right mt-2 text-gray-400 text-sm">
+              <div className="text-right mt-2 text-gray-500 dark:text-gray-400 text-sm">
                 Target: 8M $MEME
               </div>
             </div>

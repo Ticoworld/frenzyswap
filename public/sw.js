@@ -92,10 +92,41 @@ define(['./workbox-e639beba'], (function (workbox) { 'use strict';
       }
     }]
   }), 'GET');
-  workbox.registerRoute(/.*/i, new workbox.NetworkOnly({
+  // Only handle same-origin GETs; let cross-origin (e.g., Supabase) bypass SW
+  workbox.registerRoute(({url}) => url.origin === self.location.origin, new workbox.NetworkOnly({
     "cacheName": "dev",
     plugins: []
   }), 'GET');
 
 }));
 //# sourceMappingURL=sw.js.map
+
+  // Push notification handler
+  self.addEventListener('push', function (event) {
+    try {
+      const data = event.data ? event.data.json() : {};
+      const title = data.title || 'FrenzySwap';
+      const options = {
+        body: data.body || '',
+        data: data.data || {},
+        icon: '/favicon-32x32.png',
+        badge: '/favicon-16x16.png'
+      };
+      event.waitUntil(self.registration.showNotification(title, options));
+    } catch (e) {
+      // ignore
+    }
+  });
+
+  self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+    const url = (event.notification && event.notification.data && event.notification.data.url) || '/';
+    event.waitUntil(
+      clients.matchAll({ type: 'window' }).then(clientList => {
+        for (const client of clientList) {
+          if ('focus' in client) return client.focus();
+        }
+        if (clients.openWindow) return clients.openWindow(url);
+      })
+    );
+  });

@@ -43,8 +43,10 @@ const getAuthorizedWallets = () => {
   return authorizedWallets.split(',').map(wallet => wallet.trim());
 };
 
+
+
 export default function AnalyticsPage() {
-  // Visitor stats (24h by default)
+  // All hooks must be called before any return
   const { stats: visitorStats, loading: visitorStatsLoading } = useVisitorStats('24h');
   const { publicKey, connected } = useWallet();
   const [swapRecords, setSwapRecords] = useState<SwapRecord[]>([]);
@@ -54,10 +56,29 @@ export default function AnalyticsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [tokenPrices, setTokenPrices] = useState<{ [mint: string]: number | null }>({});
   const recordsPerPage = 20;
-
-  // Check if current wallet is authorized for analytics
   const authorizedWallets = getAuthorizedWallets();
   const isAuthorized = connected && publicKey && authorizedWallets.includes(publicKey.toString());
+  // --- Top Tokens by Volume Leaderboard ---
+  const topTokens = useMemo(() => {
+    const volumeMap: { [symbol: string]: { usd: number, mint: string | undefined } } = {};
+    swapRecords.forEach(rec => {
+      const symbol = rec.from_token;
+      const mint = rec.from_token_mint;
+      const amt = parseFloat(rec.from_amount);
+      const price = mint ? (tokenPrices[mint] ?? 0) : 0;
+      const usd = amt * price;
+      if (!symbol) return;
+      if (!volumeMap[symbol]) volumeMap[symbol] = { usd: 0, mint };
+      volumeMap[symbol].usd += usd;
+    });
+    return Object.entries(volumeMap)
+      .map(([symbol, { usd, mint }]) => ({ symbol, usd, mint }))
+      .sort((a, b) => b.usd - a.usd)
+      .slice(0, 5);
+  }, [swapRecords, tokenPrices]);
+
+
+  // (Removed duplicate topTokens declaration; only top-level remains)
 
   const fetchSwapRecords = async (page: number = 1) => {
     try {
@@ -178,6 +199,12 @@ export default function AnalyticsPage() {
     return `${signature.slice(0, 8)}...${signature.slice(-8)}`;
   };
 
+
+
+
+
+  // (Removed duplicate topTokens declaration; only top-level remains)
+
   return (
     <div className="min-h-screen bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4">
@@ -197,6 +224,40 @@ export default function AnalyticsPage() {
             >
               ← Back to Admin
             </Link>
+          </div>
+        </motion.div>
+
+        {/* Top Tokens by Volume Leaderboard */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          className="mb-8"
+        >
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+            <h2 className="text-lg font-semibold text-white mb-4">Top Tokens by Volume (USD)</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Token</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Volume (USD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topTokens.length === 0 ? (
+                    <tr><td colSpan={2} className="text-center text-gray-500 py-2">No data</td></tr>
+                  ) : (
+                    topTokens.map(t => (
+                      <tr key={t.symbol}>
+                        <td className="px-4 py-2 text-white font-semibold">{t.symbol}</td>
+                        <td className="px-4 py-2 text-green-400 font-mono">${t.usd.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </motion.div>
 

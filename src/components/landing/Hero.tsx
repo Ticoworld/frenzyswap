@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,15 +8,38 @@ import WaitlistModal from "./WaitlistModal";
 
 export default function Hero() {
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  // Deterministic particles to avoid SSR/CSR style mismatch
+  // Simple seeded RNG (mulberry32)
+  function rng(seed: number) {
+    return function () {
+      let t = (seed += 0x6D2B79F5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const particles = useMemo(() => {
+    const rand = rng(42);
+    return Array.from({ length: 30 }).map((_, i) => {
+      const left = `${Math.floor(rand() * 10000) / 100}%`;
+      const top = `${Math.floor(rand() * 10000) / 100}%`;
+      const size = 2 + Math.floor(rand() * 300) / 100; // 2 - 5 px
+      const color = i % 3 === 0 ? '#facc15' : i % 3 === 1 ? '#3b82f6' : '#8b5cf6';
+      const dx = Math.floor((rand() * 20 - 10) * 100) / 100; // -10 to 10
+      const duration = 4 + Math.floor(rand() * 300) / 100; // 4 - 7
+      const delay = Math.floor(rand() * 300) / 100; // 0 - 3
+      return { left, top, size, color, dx, duration, delay, key: i };
+    });
+  }, []);
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 to-black min-h-screen flex items-center overflow-x-hidden">
+    <section className="relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black min-h-screen flex items-center overflow-x-hidden">
       {/* Cosmic grid background */}
       <div className="absolute inset-0 z-0">
         {/* Enhanced cosmic grid with brighter Web3 aesthetic */}
         <motion.div
-          className="absolute inset-0 opacity-40"
+          className="absolute inset-0 opacity-20 dark:opacity-40"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 2 }}
         >
           <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
@@ -50,29 +73,29 @@ export default function Hero() {
 
         {/* Enhanced floating particles with Web3 feel */}
         <div className="absolute inset-0">
-          {Array.from({ length: 30 }).map((_, i) => (
+          {particles.map((p) => (
             <motion.div
-              key={i}
+              key={p.key}
               className="absolute rounded-full"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${2 + Math.random() * 3}px`,
-                height: `${2 + Math.random() * 3}px`,
-                background: i % 3 === 0 ? '#facc15' : i % 3 === 1 ? '#3b82f6' : '#8b5cf6',
+                left: p.left,
+                top: p.top,
+                width: `${p.size}px`,
+                height: `${p.size}px`,
+                background: p.color,
                 opacity: 0.6,
                 boxShadow: '0 0 6px currentColor',
               }}
               animate={{
                 y: [0, -30, 0],
-                x: [0, Math.random() * 20 - 10, 0],
+                x: [0, p.dx, 0],
                 opacity: [0.3, 0.9, 0.3],
                 scale: [1, 1.2, 1],
               }}
               transition={{
-                duration: 4 + Math.random() * 3,
+                duration: p.duration,
                 repeat: Infinity,
-                delay: Math.random() * 3,
+                delay: p.delay,
                 ease: "easeInOut",
               }}
             />
@@ -81,13 +104,13 @@ export default function Hero() {
 
         {/* Brighter animated gradient circles */}
         <motion.div
-          className="absolute top-20 left-10 w-96 h-96 bg-yellow-500/20 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.3, 0.15] }}
+          className="absolute top-20 left-10 w-96 h-96 bg-yellow-500/10 dark:bg-yellow-500/20 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.3, 1], opacity: [0.08, 0.2, 0.08] }}
           transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
         />
         <motion.div
-          className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/15 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.25, 0.1] }}
+          className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/8 dark:bg-blue-500/15 rounded-full blur-3xl"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.06, 0.15, 0.06] }}
           transition={{ duration: 10, repeat: Infinity, repeatType: "reverse" }}
         />
         
@@ -111,11 +134,11 @@ export default function Hero() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <span className="text-yellow-500">FrenzySwap</span> - Premier Solana DEX Aggregator
+            <span className="text-yellow-600 dark:text-yellow-500">FrenzySwap</span> - Premier Solana DEX Aggregator
           </motion.h1>
 
           <motion.p
-            className="text-xl text-gray-300 mb-8 max-w-2xl"
+            className="text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-2xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -143,7 +166,7 @@ export default function Hero() {
               onClick={() => setShowWaitlistModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 border-yellow-500 border"
+              className="bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold py-3 px-6 rounded-lg transition duration-300 flex items-center justify-center gap-2 border-yellow-600 dark:border-yellow-500 border"
             >
               <FiDollarSign />
               <span>Join Waitlist</span>
@@ -163,11 +186,11 @@ export default function Hero() {
               { value: "5.2M", label: "$MEME Burned" },
               { value: "0.3%", label: "Avg. Fee" },
             ].map((stat, index) => (
-              <div key={index} className="bg-gray-800/50 p-4 rounded-lg">
-                <div className="text-xl font-bold text-yellow-500">
+              <div key={index} className="bg-white/80 dark:bg-gray-800/50 p-4 rounded-lg backdrop-blur border border-gray-200/50 dark:border-gray-700/50">
+                <div className="text-xl font-bold text-yellow-600 dark:text-yellow-500">
                   {stat.value}
                 </div>
-                <div className="text-gray-400 text-sm">{stat.label}</div>
+                <div className="text-gray-600 dark:text-gray-400 text-sm">{stat.label}</div>
               </div>
             ))}
           </motion.div>

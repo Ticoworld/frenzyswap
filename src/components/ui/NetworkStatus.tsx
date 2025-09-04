@@ -142,7 +142,7 @@ export function PingIndicator() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center space-x-1 text-gray-400 text-xs">
+      <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 text-xs">
         <div className="animate-spin w-3 h-3 border border-gray-400 border-t-transparent rounded-full" />
         <span>Testing...</span>
       </div>
@@ -150,7 +150,7 @@ export function PingIndicator() {
   }
 
   return (
-    <div className="flex items-center space-x-1 text-gray-400 text-xs">
+    <div className="flex items-center space-x-1 text-gray-500 dark:text-gray-400 text-xs">
       <div className={`w-2 h-2 rounded-full ${
         latency === null ? 'bg-red-500' : 
         latency < 100 ? 'bg-green-500' : 

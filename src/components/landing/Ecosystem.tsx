@@ -13,7 +13,7 @@ import {
 
 export default function Ecosystem() {
   return (
-    <section className="min-h-screen py-16 bg-gray-800 flex items-center overflow-x-hidden relative">
+    <section className="min-h-screen py-16 bg-gray-100 dark:bg-gray-800 flex items-center overflow-x-hidden relative">
       {/* Ecosystem Network Cosmic Background */}
       <div className="absolute inset-0 z-0">
         {/* Network/connection cosmic grid */}
@@ -105,10 +105,10 @@ export default function Ecosystem() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            The <span className="text-yellow-500">MemeFrenzy</span> Ecosystem
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+            The <span className="text-yellow-600 dark:text-yellow-500">MemeFrenzy</span> Ecosystem
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
             More than just a swap - a complete meme token experience
           </p>
         </motion.div>
@@ -159,13 +159,13 @@ export default function Ecosystem() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   viewport={{ once: true }}
-                  className="bg-gray-700/50 hover:bg-gray-700 border border-gray-600 rounded-xl p-6 text-center transition-all"
+                  className="bg-white/80 dark:bg-gray-700/50 hover:bg-white dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-6 text-center transition-all backdrop-blur"
                 >
-                  <div className="text-yellow-500 mb-3">
+                  <div className="text-yellow-600 dark:text-yellow-500 mb-3">
                     {item.icon}
                   </div>
-                  <h3 className="text-lg font-bold">{item.title}</h3>
-                  <p className="text-gray-400 text-sm">{item.description}</p>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">{item.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">{item.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -176,15 +176,15 @@ export default function Ecosystem() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-8"
+            className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-8"
           >
             <div className="flex items-start mb-6">
               <div className="bg-yellow-500/20 p-3 rounded-xl mr-4">
-                <FiZap className="text-yellow-500 text-2xl" />
+                <FiZap className="text-yellow-600 dark:text-yellow-500 text-2xl" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold mb-2">Complete Ecosystem</h3>
-                <p className="text-gray-300">
+                <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Complete Ecosystem</h3>
+                <p className="text-gray-700 dark:text-gray-300">
                   Everything you need in one platform
                 </p>
               </div>
@@ -199,10 +199,10 @@ export default function Ecosystem() {
                 "Advanced trading analytics"
               ].map((item, index) => (
                 <div key={index} className="flex items-start">
-                  <div className="bg-gray-700 w-6 h-6 rounded-full flex items-center justify-center mt-1 mr-3 flex-shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                  <div className="bg-gray-200 dark:bg-gray-700 w-6 h-6 rounded-full flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                    <div className="w-2 h-2 rounded-full bg-yellow-600 dark:bg-yellow-500"></div>
                   </div>
-                  <span className="text-gray-300">{item}</span>
+                  <span className="text-gray-700 dark:text-gray-300">{item}</span>
                 </div>
               ))}
             </div>

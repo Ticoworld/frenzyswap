@@ -161,8 +161,8 @@ export default function PlatformStats({
           viewport={{ once: true }}
           className="text-center mb-8"
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">Platform Statistics</h2>
-          <p className="text-gray-400">Real-time FrenzySwap performance metrics</p>
+          <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900 dark:text-white">Platform Statistics</h2>
+          <p className="text-gray-600 dark:text-gray-400">Real-time FrenzySwap performance metrics</p>
         </motion.div>
       )}
 
@@ -174,17 +174,17 @@ export default function PlatformStats({
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             viewport={{ once: true }}
-            className="bg-gray-800 rounded-xl p-4 lg:p-6 hover:bg-gray-750 transition-all duration-300 border border-gray-700 hover:border-gray-600"
+            className="bg-white dark:bg-gray-800 rounded-xl p-4 lg:p-6 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all duration-300 border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
           >
             <div className={`${stat.bgColor} w-12 h-12 rounded-full flex items-center justify-center mb-4`}>
               <div className={stat.color}>
                 {stat.icon}
               </div>
             </div>
-            <div className="text-2xl font-bold text-white mb-1">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
               {stat.value}
             </div>
-            <div className="text-gray-400 text-sm">
+            <div className="text-gray-600 dark:text-gray-400 text-sm">
               {stat.label}
             </div>
           </motion.div>
@@ -192,7 +192,7 @@ export default function PlatformStats({
       </div>
 
       {stats.lastUpdated && (
-        <p className="text-xs text-gray-500 text-center mt-4">
+        <p className="text-xs text-gray-500 dark:text-gray-500 text-center mt-4">
           Last updated: {new Date(stats.lastUpdated).toLocaleString()}
         </p>
       )}

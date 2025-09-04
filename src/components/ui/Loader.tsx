@@ -29,7 +29,7 @@ export default function GlobalLoader() {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 z-50 bg-gray-900 flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 bg-white dark:bg-gray-900 flex flex-col items-center justify-center"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
@@ -72,7 +72,7 @@ export default function GlobalLoader() {
             />
           </div>
           
-          <div className="mt-4 text-gray-400 text-sm">
+          <div className="mt-4 text-gray-500 dark:text-gray-400 text-sm">
             {progress < 100 ? (
               `Loading ${progress}%`
             ) : (

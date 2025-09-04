@@ -119,7 +119,7 @@ export default function TokenImage({
       {/* Loading skeleton */}
       {isLoading && (
         <div className="absolute inset-0 bg-gray-700 animate-pulse rounded-full flex items-center justify-center">
-          <span className="text-xs text-gray-400 font-medium">{placeholder}</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{placeholder}</span>
         </div>
       )}
       

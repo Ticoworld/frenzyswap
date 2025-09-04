@@ -2,8 +2,34 @@
 import { WalletProvider } from '@/lib/wallet/adapter';
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast'; // ✅ Import toast system
+import { I18nProvider } from '@/lib/i18n';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+
+  useEffect(() => {
+    // Theme bootstrap: apply dark/light/system at startup
+    try {
+      const applyTheme = (mode: string) => {
+        const root = document.documentElement;
+        if (mode === 'dark') root.classList.add('dark');
+        else if (mode === 'light') root.classList.remove('dark');
+        else {
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          root.classList.toggle('dark', !!prefersDark);
+        }
+      };
+      const saved = localStorage.getItem('frenzy_pref_theme') || 'system';
+      applyTheme(saved);
+      // respond to system changes when in system mode
+      const mql = window.matchMedia('(prefers-color-scheme: dark)');
+      const listener = () => {
+        const mode = localStorage.getItem('frenzy_pref_theme') || 'system';
+        if (mode === 'system') applyTheme('system');
+      };
+      mql.addEventListener?.('change', listener);
+      return () => mql.removeEventListener?.('change', listener);
+    } catch {}
+  }, []);
 
   useEffect(() => {
     const preloadAssets = [
@@ -32,25 +58,27 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <WalletProvider>
-      {children}
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          duration: 5000,
-          style: {
-            background: '#1a1a1a',
-            color: '#fff',
-            border: '1px solid #facc15', // Tailwind yellow-400
-            padding: '12px 16px',
-            fontSize: '0.875rem',
-            fontWeight: '500'
-          },
-          iconTheme: {
-            primary: '#facc15',
-            secondary: '#1a1a1a'
-          }
-        }}
-      />
+      <I18nProvider>
+        {children}
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 5000,
+            style: {
+              background: '#1a1a1a',
+              color: '#fff',
+              border: '1px solid #facc15', // Tailwind yellow-400
+              padding: '12px 16px',
+              fontSize: '0.875rem',
+              fontWeight: '500'
+            },
+            iconTheme: {
+              primary: '#facc15',
+              secondary: '#1a1a1a'
+            }
+          }}
+        />
+      </I18nProvider>
     </WalletProvider>
   );
 }

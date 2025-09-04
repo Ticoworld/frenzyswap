@@ -1,6 +1,15 @@
 // src/lib/analytics.ts
 import { supabase, isAnalyticsEnabled } from './supabase';
 
+// Local opt-out flag
+const isUserOptedOut = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  try {
+    const v = localStorage.getItem('frenzy_analytics_opt_out');
+    return v === '1' || v === 'true';
+  } catch { return false; }
+};
+
 export interface PageView {
   visitor_id?: string;
   page_path: string;
@@ -61,7 +70,7 @@ export const getSessionId = (): string => {
 
 // Track page view
 export const trackPageView = async (pagePath: string, walletAddress?: string) => {
-  if (!isAnalyticsEnabled()) return;
+  if (!isAnalyticsEnabled() || isUserOptedOut()) return;
 
   try {
     const sessionId = getSessionId();
@@ -92,7 +101,7 @@ export const trackWalletConnection = async (
   walletType: string,
   isFirstConnection: boolean = false
 ) => {
-  if (!isAnalyticsEnabled()) return;
+  if (!isAnalyticsEnabled() || isUserOptedOut()) return;
 
   try {
     const sessionId = getSessionId();
@@ -119,7 +128,7 @@ export const trackWalletConnection = async (
 
 // Update session data
 const updateSession = async (sessionId: string, walletAddress?: string) => {
-  if (!isAnalyticsEnabled()) return;
+  if (!isAnalyticsEnabled() || isUserOptedOut()) return;
 
   try {
     // Check if session exists
@@ -167,7 +176,7 @@ const updateSession = async (sessionId: string, walletAddress?: string) => {
 // Track time spent on page
 export const trackTimeSpent = (startTime: number) => {
   return async () => {
-    if (!isAnalyticsEnabled()) return;
+    if (!isAnalyticsEnabled() || isUserOptedOut()) return;
     
     const timeSpent = Math.floor((Date.now() - startTime) / 1000);
     const sessionId = getSessionId();
@@ -191,7 +200,7 @@ export const trackTimeSpent = (startTime: number) => {
 
 // Utility: Get visitor stats
 export const getVisitorStats = async (timeframe: '24h' | '7d' | '30d' = '24h') => {
-  if (!isAnalyticsEnabled()) return null;
+  if (!isAnalyticsEnabled() || isUserOptedOut()) return null;
 
   try {
     let dateFilter = new Date();

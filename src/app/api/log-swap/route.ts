@@ -1,6 +1,12 @@
 // src/app/api/log-swap/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, isAnalyticsEnabled } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
+import { checkRateLimit } from '@/lib/auth'
+import { awardPoints, PointsPolicy, upsertStreak, logEvent } from '@/lib/gamification'
+import { upsertUserPnlCache, getUserPnl } from '@/lib/pnl'
+import { verifyReferralIfAny } from '@/lib/referrals'
+import { evaluateAndAwardBadges } from '@/lib/badges'
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,7 +74,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Insert into Supabase
-    const { data, error } = await supabase!
+    const client = (supabaseAdmin || supabase)!
+    // simple rate-limit: 30 swaps per minute per wallet (analytics logging)
+    if (!checkRateLimit(`log-swap:${walletAddress}`, 30, 60_000)) {
+      try { await client.from('event_logs').insert([{ event_type: 'fraud_velocity_cap', wallet_address: walletAddress, metadata: { reason: 'swap_log_rate_limit' } }]) } catch {}
+      return NextResponse.json({ error: 'Rate limited' }, { status: 429 })
+    }
+
+    const { data, error } = await client
       .from('swap_records')
       .insert([swapRecord])
       .select()
@@ -89,10 +102,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      data: data[0] 
-    })
+    // Best-effort gamification hooks (non-blocking)
+    const record = data?.[0]
+    if (record) {
+      const volumeUsd = Number(record.from_usd_value || 0)
+      const points = PointsPolicy.swapBase + Math.floor((volumeUsd || 0) * PointsPolicy.volumePerUsd)
+      Promise.allSettled([
+        awardPoints({ wallet: record.wallet_address, points, reason: 'swap', metadata: { volumeUsd }, signature: record.signature }),
+        upsertStreak(record.wallet_address, new Date(record.created_at || Date.now())),
+        logEvent({ event_type: 'swap_logged', wallet_address: record.wallet_address, signature: record.signature, metadata: { from: record.from_token, to: record.to_token, volumeUsd } }),
+        // opportunistic P&L cache update
+        (async () => { const s = await getUserPnl(record.wallet_address); await upsertUserPnlCache(record.wallet_address, s) })(),
+        // verify referral (if any) on first successful swap of referee
+        verifyReferralIfAny(record.wallet_address),
+        // evaluate badges after swap
+        evaluateAndAwardBadges(record.wallet_address),
+      ])
+    }
+
+    return NextResponse.json({ success: true, data: record })
 
   } catch (error) {
     console.error('Log swap API error:', error)

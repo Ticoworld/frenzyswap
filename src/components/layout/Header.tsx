@@ -27,7 +27,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-gray-900 border-b border-gray-800">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -56,15 +56,15 @@ export default function Header() {
                 href={item.path}
                 className={`relative px-4 py-2 rounded-lg transition-colors ${
                   pathname === item.path
-                    ? "text-yellow-500"
-                    : "text-gray-400 hover:text-white"
+                    ? "text-yellow-600 dark:text-yellow-500"
+                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
                 }`}
               >
                 {item.label}
                 {pathname === item.path && (
                   <motion.div
                     layoutId="navigation-underline"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-500"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-600 dark:bg-yellow-500"
                     initial={false}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
@@ -83,7 +83,7 @@ export default function Header() {
             {/* Mobile Menu Button (hydration-safe for icons) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-gray-400 hover:text-white"
+              className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
               aria-label="Toggle mobile menu" // <--- Added for accessibility
             >
               {/* Conditionally render icons only on client */}
@@ -109,7 +109,7 @@ export default function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden py-4 border-t border-gray-800"
+            className="lg:hidden py-4 border-t border-gray-200 dark:border-gray-800"
           >
             <div className="flex flex-col space-y-2">
               {navItems.map((item) => (
@@ -118,8 +118,8 @@ export default function Header() {
                   href={item.path}
                   className={`px-4 py-3 rounded-lg transition-colors ${
                     pathname === item.path
-                      ? "bg-gray-800 text-yellow-500"
-                      : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                      ? "bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500"
+                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >

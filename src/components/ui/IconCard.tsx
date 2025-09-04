@@ -25,7 +25,7 @@ export default function IconCard({
         {icon}
       </div>
       <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-gray-300">{description}</p>
+      <p className="text-gray-600 dark:text-gray-300">{description}</p>
     </motion.div>
   );
 }

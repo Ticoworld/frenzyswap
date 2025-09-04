@@ -12,7 +12,7 @@ import Link from 'next/link';
 
 export default function HowItWorks() {
   return (
-    <section className="min-h-screen py-16 bg-gray-900 flex md:items-center  items-start -x-hidden relative">
+    <section className="min-h-screen py-16 bg-gray-50 dark:bg-gray-900 flex md:items-center  items-start -x-hidden relative">
       {/* Web3 Background Pattern */}
       <div className="absolute inset-0 z-0">
         {/* Cosmic grid background */}
@@ -94,7 +94,7 @@ export default function HowItWorks() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             The <span className="text-yellow-500">FrenzySwap</span> Cycle
           </h2>
-          <p className="text-lg text-gray-300">
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Swap. Fee. Buyback. Burn. Value up.
           </p>
         </motion.div>
@@ -149,12 +149,12 @@ export default function HowItWorks() {
                   </div>
                   <div className="pt-1 border-l-2 border-yellow-500/20 pl-4 py-2">
                     <div className="flex items-center mb-2">
-                      <div className="bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 border border-yellow-500/30">
+                      <div className="bg-gray-100 dark:bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 border border-yellow-500/30">
                         <span className="text-sm font-bold text-yellow-500">{index + 1}</span>
                       </div>
                       <h3 className="text-xl font-bold border-b-2 border-yellow-500 pb-1">{step.title}</h3>
                     </div>
-                    <p className="text-gray-300">{step.description}</p>
+                    <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -170,7 +170,7 @@ export default function HowItWorks() {
               viewport={{ once: true }}
               className="w-full max-w-lg flex flex-col"
             >
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-500/20 rounded-2xl p-6 flex flex-col">
+              <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border-2 border-yellow-500/20 rounded-2xl p-6 flex flex-col shadow-lg">
                 <div className="flex-1 flex flex-col justify-center">
                   {/* Value Cycle Visualization */}
                   <div className="relative mx-auto w-full max-w-xs aspect-square mb-6">
@@ -181,7 +181,7 @@ export default function HowItWorks() {
                     {[0, 1, 2, 3].map((i) => (
                       <motion.div
                         key={i}
-                        className="absolute w-12 h-12 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-500/30 flex items-center justify-center shadow-lg"
+                        className="absolute w-12 h-12 rounded-full bg-gradient-to-br from-white to-gray-100 dark:from-gray-800 dark:to-gray-900 border-2 border-yellow-500/30 flex items-center justify-center shadow-lg"
                         style={{
                           top: `${42 - 40 * Math.sin((i * Math.PI)/2)}%`,
                           left: `${42 + 40 * Math.cos((i * Math.PI)/2)}%`,
@@ -235,7 +235,7 @@ export default function HowItWorks() {
                     {/* Center value growth */}
                     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                       <div className="text-yellow-500 text-lg font-bold mb-1">$MEME</div>
-                      <div className="text-gray-300 text-xs">Value Growth</div>
+                      <div className="text-gray-600 dark:text-gray-300 text-xs">Value Growth</div>
                     </div>
                   </div>
                   
@@ -248,10 +248,10 @@ export default function HowItWorks() {
                       <FiArrowRight className="text-yellow-500 text-lg" />
                       <span className="bg-green-500 text-white px-3 py-1 rounded-lg text-sm">Value ↑</span>
                     </h3>
-                    <p className="text-gray-300 text-sm leading-relaxed border-t border-b border-yellow-500/20 py-3">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed border-t border-b border-yellow-500/20 py-3">
                       Each transaction reduces $MEME supply, increasing token value for all holders
                     </p>
-                    <div className="mt-3 flex items-center justify-center text-xs text-gray-400">
+                    <div className="mt-3 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
                       <span className="mr-1">Powered by</span>
                       <Image src="/jupiter-ag-jup-logo.svg" alt="Jupiter Logo" width={16} height={16} className="inline-block mr-1" />
                       <span className="font-semibold text-yellow-500">Jupiter</span>
@@ -276,7 +276,7 @@ export default function HowItWorks() {
                         className={`p-2 rounded-lg text-center border ${stat.color}`}
                       >
                         <div className="text-yellow-500 text-lg font-bold">{stat.value}</div>
-                        <div className="text-gray-400 text-xs mt-1">{stat.label}</div>
+                        <div className="text-gray-500 dark:text-gray-400 text-xs mt-1">{stat.label}</div>
                       </motion.div>
                     ))}
                   </div>

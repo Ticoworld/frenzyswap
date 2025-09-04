@@ -34,7 +34,7 @@ export default function Partners() {
   };
 
   return (
-    <section className="py-16 bg-gray-900">
+    <section className="py-16 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -46,7 +46,7 @@ export default function Partners() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Our <span className="text-yellow-500">Partners</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Trusted by leading projects in the Solana ecosystem
           </p>
         </motion.div>
@@ -64,7 +64,7 @@ export default function Partners() {
               className="flex justify-center"
             >
               <motion.div 
-                className="bg-gray-800 rounded-xl p-6 flex items-center justify-center h-24 w-full hover:bg-gray-700 transition-colors"
+                className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 flex items-center justify-center h-24 w-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors shadow-md"
                 whileHover={{ 
                   y: -5,
                   boxShadow: "0 10px 25px -5px rgba(250, 204, 21, 0.1), 0 10px 10px -5px rgba(250, 204, 21, 0.04)"

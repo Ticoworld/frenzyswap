@@ -5,6 +5,7 @@ import GlobalLoader from "@/components/ui/Loader";
 import RouteLoader from "@/components/ui/RouteLoader";
 import Providers from "./providers";
 import StructuredData from "@/components/common/StructuredData";
+import MobileQuickNav from "@/components/navigation/MobileQuickNav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,18 +42,21 @@ export const metadata: Metadata = {
     locale: 'en_US',
     images: [
       {
-        url: '/assets/frenzy-desktop.png',
+        // Prefer JPG for Telegram previews
+        url: '/assets/logos/frenzy-logo.jpg',
         width: 1200,
         height: 630,
-        alt: 'FrenzySwap DEX Interface',
+        alt: 'FrenzySwap Logo',
       },
+      // Fallback SVG mark if a client supports it
+      { url: '/frenzyswap_logomark.svg', alt: 'FrenzySwap Logomark' },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: "FrenzySwap | Premier Solana DEX Aggregator",
     description: "Trade meme tokens on Solana with the best rates. Powered by Jupiter aggregation.",
-    images: ['/assets/frenzy-desktop.png'],
+    images: ['/assets/logos/frenzy-logo.jpg'],
     creator: '@FrenzySwap',
     site: '@FrenzySwap',
   },
@@ -90,13 +94,27 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function(){
+              try{
+                var d=document.documentElement;var m=localStorage.getItem('frenzy_pref_theme')||'system';
+                if(m==='dark'){d.classList.add('dark');}
+                else if(m==='light'){d.classList.remove('dark');}
+                else{var prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;d.classList.toggle('dark',!!prefersDark);} 
+              }catch(e){}
+            })();
+          `}}
+        />
         <StructuredData />
       </head>
-      <body className={`${inter.className} bg-gray-900 text-white`}>
+      <body className={`${inter.className} bg-white text-neutral-900 dark:bg-gray-900 dark:text-white`}>
         <Providers>
           <GlobalLoader />
           <RouteLoader />
           {children}
+          <MobileQuickNav />
         </Providers>
       </body>
     </html>

@@ -1,8 +1,15 @@
 // src/app/api/waitlist/admin/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/mongodb';
+import { requireAdmin } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
+  // Check admin authentication
+  const authResult = requireAdmin(request);
+  if (authResult instanceof Response) {
+    return authResult;
+  }
+
   try {
     const db = await getDatabase();
     const collection = db.collection('waitlist');
@@ -22,7 +29,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      entries: entriesWithPosition
+      entries: entriesWithPosition,
+      requestedBy: authResult.walletAddress // Log who accessed this
     });
   } catch (error) {
     console.error('Failed to fetch waitlist entries:', error);

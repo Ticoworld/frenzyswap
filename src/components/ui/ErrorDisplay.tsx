@@ -142,7 +142,7 @@ export default function ErrorDisplay({
             <h4 className={`font-medium ${config.textColor} mb-1`}>
               {config.title}
             </h4>
-            <p className="text-gray-300 break-words">
+            <p className="text-gray-600 dark:text-gray-300 break-words">
               {error}
             </p>
           </div>
@@ -151,7 +151,7 @@ export default function ErrorDisplay({
         {/* Suggestion */}
         <div className={`text-xs ${config.textColor} bg-black/20 rounded-lg p-3 border border-current/10`}>
           <p className="font-medium mb-1">💡 Suggestion:</p>
-          <p className="text-gray-300">{getSuggestion()}</p>
+          <p className="text-gray-600 dark:text-gray-300">{getSuggestion()}</p>
         </div>
 
         {/* Retry Button */}
