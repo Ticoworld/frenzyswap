@@ -16,6 +16,7 @@ import MultiWalletCard from '@/components/settings/MultiWalletCard';
 import OnboardingHelpCard from '@/components/settings/OnboardingHelpCard';
 import NotificationsCard from '@/components/settings/NotificationsCard';
 import SettingsHelpNav from '@/components/navigation/SettingsHelpNav';
+import InviteCard from '@/components/settings/InviteCard';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -146,6 +147,9 @@ export default function SettingsPage() {
               </div>
               <div className="mt-3 text-xs text-gray-600 dark:text-gray-400">Stats: {verifiedCount} verified / {referralCount} total</div>
             </section>
+
+            {/* Invite Friends */}
+            <InviteCard wallet={wallet} />
 
             {/* Security & Sessions */}
             <TwoFactorCard />

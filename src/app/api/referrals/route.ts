@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url)
   const wallet = url.searchParams.get('wallet') || ''
   const role = url.searchParams.get('role') || 'referrer'
-  const col = role === 'referee' ? 'referee_wallet' : 'referrer_wallet'
+  const col = role === 'referee' ? 'referred_wallet' : 'referrer_wallet'
   const client = (supabaseAdmin || supabase)!
   const { data, error } = await client.from('referrals').select('*').eq(col, wallet).order('created_at', { ascending: false })
   if (error) return NextResponse.json({ error: 'Failed' }, { status: 500 })

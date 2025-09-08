@@ -1,6 +1,7 @@
 // src/lib/auth.ts
 import { NextRequest } from 'next/server';
 import crypto from 'crypto';
+import { isWhitelistedDB } from './access'
 
 // Get secret from environment variable
 const AUTH_SECRET = process.env.AUTH_SECRET || crypto.randomBytes(32).toString('hex');
@@ -27,28 +28,28 @@ export interface AuthToken {
 }
 
 // Simple token generation using crypto
-export function generateAuthToken(walletAddress: string): string {
+export function generateAuthTokenSync(walletAddress: string): string {
   const adminWallets = getAdminWallets();
   const whitelistedWallets = getWhitelistedWallets();
-  
   const normalizedWallet = walletAddress.toLowerCase();
   const isAdmin = adminWallets.includes(normalizedWallet);
   const isWhitelisted = whitelistedWallets.includes(normalizedWallet) || isAdmin;
-
-  const tokenData: AuthToken = {
-    walletAddress: normalizedWallet,
-    isAdmin,
-    isWhitelisted,
-    exp: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-  };
-
-  // Create a signed token
+  const tokenData: AuthToken = { walletAddress: normalizedWallet, isAdmin, isWhitelisted, exp: Date.now() + 24*60*60*1000 };
   const payload = JSON.stringify(tokenData);
-  const signature = crypto
-    .createHmac('sha256', AUTH_SECRET)
-    .update(payload)
-    .digest('hex');
+  const signature = crypto.createHmac('sha256', AUTH_SECRET).update(payload).digest('hex');
+  return Buffer.from(`${payload}.${signature}`).toString('base64');
+}
 
+export async function generateAuthToken(walletAddress: string): Promise<string> {
+  const adminWallets = getAdminWallets();
+  const normalizedWallet = walletAddress.toLowerCase();
+  const isAdmin = adminWallets.includes(normalizedWallet);
+  // Prefer DB whitelist; fallback to env for bootstrap
+  const dbWhite = await isWhitelistedDB(normalizedWallet)
+  const envWhite = getWhitelistedWallets().includes(normalizedWallet)
+  const tokenData: AuthToken = { walletAddress: normalizedWallet, isAdmin, isWhitelisted: dbWhite || envWhite || isAdmin, exp: Date.now() + 24*60*60*1000 };
+  const payload = JSON.stringify(tokenData);
+  const signature = crypto.createHmac('sha256', AUTH_SECRET).update(payload).digest('hex');
   return Buffer.from(`${payload}.${signature}`).toString('base64');
 }
 

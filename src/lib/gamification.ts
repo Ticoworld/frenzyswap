@@ -4,6 +4,7 @@ import { supabaseAdmin } from './supabaseAdmin'
 export type PointsReason =
   | 'swap'
   | 'referral_verified'
+  | 'referral_accepted'
   | 'streak_day'
   | 'special_event'
 
@@ -20,6 +21,7 @@ export const PointsPolicy = {
   swapBase: 5, // base points per swap
   volumePerUsd: 0.05, // points per 1 USD volume
   referralVerified: 200,
+  referralAccepted: 50,
   streakDaily: 10,
 }
 

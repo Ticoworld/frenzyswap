@@ -25,23 +25,21 @@ export default function LoginPage() {
     setAccessStatus('checking');
     
     try {
-      // Get allowed wallets from environment
-      const allowedWallets = process.env.NEXT_PUBLIC_ALLOWED_WALLETS?.split(',') || [];
       const walletAddress = publicKey.toString();
-      
-      if (allowedWallets.includes(walletAddress)) {
-        // Set cookie for middleware to read
-        document.cookie = `connected-wallet=${walletAddress}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
-        
+      const urlParams = new URLSearchParams(window.location.search);
+      const invite = urlParams.get('invite');
+      // Set cookie for middleware to read
+      document.cookie = `connected-wallet=${walletAddress}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+      const resp = await fetch(`/api/access?wallet=${walletAddress}${invite ? `&token=${invite}` : ''}`, { cache: 'no-store' });
+      const data = await resp.json();
+      if (data?.access) {
+        // mark access cookie for middleware
+        document.cookie = `access-ok=1; path=/; max-age=${60 * 60 * 24}; samesite=lax`;
         setAccessStatus('granted');
-        
-        // Redirect to intended page or default to swap with minimal delay
         setTimeout(() => {
-          const urlParams = new URLSearchParams(window.location.search);
           const returnTo = urlParams.get('returnTo') || '/swap';
-          console.log(`[Login] ✅ Access granted, redirecting to: ${returnTo}`);
           router.push(returnTo);
-        }, 800); // Reduced from 2000ms to 800ms for faster UX
+        }, 600);
       } else {
         setAccessStatus('denied');
       }
@@ -150,7 +148,7 @@ export default function LoginPage() {
               <div className="text-center py-6">
                 <div className="animate-spin w-8 h-8 border-2 border-yellow-500 border-t-transparent rounded-full mx-auto mb-3"></div>
                 <p className="text-gray-300 font-medium">Verifying access...</p>
-                <p className="text-gray-500 text-sm mt-1">Checking wallet against allowlist</p>
+                <p className="text-gray-500 text-sm mt-1">Checking wallet against access rules</p>
               </div>
             )}
 
@@ -188,7 +186,7 @@ export default function LoginPage() {
                 </div>
                 <p className="text-yellow-400 font-bold text-lg mb-2">Beta Access Required</p>
                 <p className="text-gray-400 text-sm mb-6">
-                  FrenzySwap is currently in private beta. Join our waitlist to get early access when we expand!
+                  FrenzySwap is in private beta. Join the waitlist or use a valid invite link to gain access.
                 </p>
                 
                 {/* Waitlist Form */}

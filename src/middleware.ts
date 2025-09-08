@@ -40,18 +40,16 @@ function isProtectedRoute(pathname: string): boolean {
   return PROTECTED_ROUTES.some(route => pathname.startsWith(route));
 }
 
-function verifyBetaAccess(request: NextRequest): boolean {
-  const walletCookie = request.cookies.get('connected-wallet')?.value;
-  
-  if (!walletCookie) {
-    return false;
-  }
-
-  // Get allowed wallets from environment
-  const allowedWallets = process.env.NEXT_PUBLIC_ALLOWED_WALLETS?.split(',') || [];
-  
-  // Check if connected wallet is in allowlist
-  return allowedWallets.includes(walletCookie);
+function shouldAllow(request: NextRequest): { ok: boolean; redirect?: URL } {
+  const accessOk = request.cookies.get('access-ok')?.value === '1'
+  if (accessOk) return { ok: true }
+  const wallet = request.cookies.get('connected-wallet')?.value
+  // If wallet present but no access cookie, force login to evaluate
+  const loginUrl = new URL('/login', request.url)
+  loginUrl.searchParams.set('returnTo', request.nextUrl.pathname)
+  const inviteToken = request.nextUrl.searchParams.get('invite')
+  if (inviteToken) loginUrl.searchParams.set('invite', inviteToken)
+  return { ok: false, redirect: loginUrl }
 }
 
 export function middleware(request: NextRequest) {
@@ -64,14 +62,8 @@ export function middleware(request: NextRequest) {
 
   // Only check access for protected routes
   if (isProtectedRoute(pathname)) {
-    const hasAccess = verifyBetaAccess(request);
-    
-    if (!hasAccess) {
-      // Redirect to login page with return URL
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('returnTo', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
+    const check = shouldAllow(request)
+    if (!check.ok) return NextResponse.redirect(check.redirect!)
   }
 
   // Allow all other routes (website pages)
