@@ -1,32 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createInvite, consumeInviteIfValid, isWhitelistedEither } from '@/lib/access'
+import { isWhitelistedEither, hasAccessOrOnboard } from '@/lib/access'
 import { getAuthFromRequest } from '@/lib/auth'
 
-// POST /api/invites -> create invite token (inviter must be whitelisted)
+// Compatibility wrapper for legacy invite API.
+// We no longer issue token-based invites; POST returns a referral link for the inviter.
 export async function POST(request: NextRequest) {
-  // Prefer bearer/cookie auth; fallback to connected-wallet cookie/header
   const auth = getAuthFromRequest(request)
-  let inviter = auth?.walletAddress
-  if (!inviter) {
-    inviter = request.headers.get('x-wallet') || request.cookies.get('connected-wallet')?.value || ''
-  }
+  let inviter = auth?.walletAddress || request.headers.get('x-wallet') || request.cookies.get('connected-wallet')?.value || ''
+  inviter = (inviter || '').toLowerCase()
   if (!inviter) return NextResponse.json({ error: 'auth required' }, { status: 401 })
   if (!(await isWhitelistedEither(inviter))) return NextResponse.json({ error: 'not allowed' }, { status: 403 })
-  const body = await request.json().catch(() => ({}))
-  const maxUses = Math.min(Math.max(Number(body?.maxUses || 1), 1), 25)
-  const expiresAt = body?.expiresAt ? new Date(body.expiresAt) : undefined
-  const res = await createInvite(inviter, maxUses, expiresAt)
-  if (!res.success) return NextResponse.json(res, { status: 400 })
-  return NextResponse.json({ token: res.token })
+  const origin = request.headers.get('origin') || new URL(request.url).origin
+  const link = `${origin}/login?ref=${inviter}`
+  return NextResponse.json({ link })
 }
 
-// PUT /api/invites?token=... -> accept invite for wallet in body
+// Accept an invite by mapping token to referrer wallet for unified onboarding.
+// PUT /api/invites?token=<referrerWallet> body: { wallet }
 export async function PUT(request: NextRequest) {
   const url = new URL(request.url)
-  const token = url.searchParams.get('token') || ''
+  const token = (url.searchParams.get('token') || '').toLowerCase()
   const { wallet } = await request.json().catch(() => ({ wallet: '' }))
-  if (!token || !wallet) return NextResponse.json({ error: 'token and wallet required' }, { status: 400 })
-  const res = await consumeInviteIfValid(token, wallet)
-  if (!res.success) return NextResponse.json(res, { status: 400 })
-  return NextResponse.json({ success: true, inviter: res.inviter })
+  const w = (wallet || '').toLowerCase()
+  if (!token || !w) return NextResponse.json({ error: 'token and wallet required' }, { status: 400 })
+  const res = await hasAccessOrOnboard(w, token)
+  if (!res.access) return NextResponse.json({ error: 'invalid or unauthorized', details: res }, { status: 400 })
+  return NextResponse.json({ success: true, inviter: token })
 }

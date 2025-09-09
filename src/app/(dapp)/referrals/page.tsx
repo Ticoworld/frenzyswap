@@ -54,7 +54,7 @@ export default function ReferralsPage() {
               <div className="mt-3 text-xs text-gray-400">Tip: Only submit wallets you trust. Fraud attempts are blocked.</div>
               <div className="mt-4 text-xs text-gray-400">
                 Your referral code: <span className="font-mono bg-gray-900 px-2 py-1 rounded">{wallet.slice(0,6)}…{wallet.slice(-4)}</span>
-                <button className="ml-2 underline hover:text-white" onClick={() => navigator.clipboard.writeText(`${location.origin}/?ref=${wallet}`)}>Copy referral link</button>
+                <button className="ml-2 underline hover:text-white" onClick={() => navigator.clipboard.writeText(`${location.origin}/login?ref=${wallet}`)}>Copy referral link</button>
               </div>
             </div>
             <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
@@ -72,9 +72,9 @@ export default function ReferralsPage() {
                 </div>
               </div>
               <div className="text-gray-300 text-sm space-y-2">
-                {(referrals).map((r: any) => (
+        {(referrals).map((r: any) => (
                   <div key={r.id} className="flex items-center justify-between border-b border-gray-700/50 pb-2">
-                    <span className="font-mono">{r.referee_wallet.slice(0,4)}...{r.referee_wallet.slice(-4)}</span>
+          <span className="font-mono">{(r.referred_wallet || r.referee_wallet)?.slice(0,4)}...{(r.referred_wallet || r.referee_wallet)?.slice(-4)}</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${r.status==='verified' ? 'bg-green-500/20 text-green-300' : r.status==='pending' ? 'bg-yellow-500/10 text-yellow-300' : 'bg-gray-500/10 text-gray-300'}`}>{r.status}</span>
                     {r.status==='verified' && <span className="ml-2 text-green-400">✓</span>}
                   </div>

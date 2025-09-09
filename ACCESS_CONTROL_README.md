@@ -1,22 +1,24 @@
-Access control and referrals (2025-09-08)
+Access control and referrals (2025-09-09)
+
 
 - DB whitelist: table access_whitelist is the source of truth. Only wallets present here can access protected routes.
 - ENV bootstrap: NEXT_PUBLIC_ALLOWED_WALLETS is used only to auto-add a wallet to DB on first visit.
-- Invites: invite_tokens support secure referral links. Accepting a valid token auto-whitelists the invitee and logs invite_acceptances. A referral row is also created/kept pending for later verification points on first swap.
-- Middleware: uses hasAccessOrOnboard(wallet, token) to grant access, migrate env, or redirect to login/waitlist.
+- Referrals: Each user has a single referral link: `/login?ref=<wallet>`. When a new user joins with this link, they are auto-whitelisted, a referral is logged, and the inviter is awarded points. No invite tokens are used. For legacy links that used `?invite=`, the value is treated as the referrer wallet.
+- Middleware: uses hasAccessOrOnboard(wallet, ref) to grant access, migrate env, or redirect to login/waitlist.
 - Login page: calls /api/access to resolve access and sets the connected-wallet cookie for middleware.
+
 
 Edge cases
 - Idempotent upserts into access_whitelist to avoid duplicates.
-- Token exhaustion and expiry are enforced. A Postgres RPC increment_invite_use can be added for atomic increments; a fallback update is used if RPC is absent.
+- Referral onboarding is atomic and idempotent; double-adds are prevented.
 
-Testing
-- .env whitelist only
-- referral invite path with token
-- non-invited waitlist path
-- repeat visits rely solely on DB whitelist
+
+Implementation notes
+- Unified access orchestration: DB whitelist → ENV bootstrap → referral link → waitlist.
+- Middleware preserves `ref`, `invite`, and `returnTo` query params when redirecting to `/login`.
+- Idempotent upserts and unique constraints keep onboarding atomic.
+
 
 Invite Friends (UI)
-- In Settings, use the Invite Friends card to create a token-backed link.
-- Share link (/login?invite=<token>). When the invitee connects with this link, they are auto-whitelisted and you gain points.
-- You can copy the link via the Copy button. Errors are surfaced inline and via toasts.
+- In Settings, share your referral link (`/login?ref=<your-wallet>`). Anyone who joins with this link is auto-whitelisted and you earn points for each verified referral.
+- The UI provides a copy button and shows referral stats (verified/total). No invite tokens or separate invite links exist.

@@ -16,7 +16,7 @@ import MultiWalletCard from '@/components/settings/MultiWalletCard';
 import OnboardingHelpCard from '@/components/settings/OnboardingHelpCard';
 import NotificationsCard from '@/components/settings/NotificationsCard';
 import SettingsHelpNav from '@/components/navigation/SettingsHelpNav';
-import InviteCard from '@/components/settings/InviteCard';
+// InviteCard removed: unified referral link only
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -70,7 +70,7 @@ export default function SettingsPage() {
   const referralCount = (referrals?.data || []).length;
   const verifiedCount = (referrals?.data || []).filter((r: any) => r.status === 'verified').length;
 
-  const referralLink = useMemo(() => (wallet ? `${location.origin}/?ref=${wallet}` : ''), [wallet]);
+  const referralLink = useMemo(() => (wallet ? `${location.origin}/login?ref=${wallet}` : ''), [wallet]);
 
   async function handleDisconnect() {
     try {
@@ -137,19 +137,29 @@ export default function SettingsPage() {
               <div id="privacyHelp" className="text-xs text-gray-600 dark:text-gray-500 mt-2">Takes effect immediately. You can undo anytime.</div>
             </section>
 
-            {/* Referral */}
+            {/* Unified Referral Panel */}
             <section className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Referral</h2>
-              <div className="text-sm text-gray-700 dark:text-gray-300">Share your link to invite friends and earn points.</div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Invite Friends</h2>
+              <div className="text-sm text-gray-700 dark:text-gray-300 mb-2">
+                Share your personal referral link below. Anyone who joins using this link is automatically whitelisted and you earn points for each verified referral.
+              </div>
               <div className="mt-3 flex flex-col md:flex-row gap-3">
                 <input readOnly value={referralLink} className="flex-1 px-3 py-2 rounded bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200" aria-label="Referral link" />
-                <button onClick={() => { navigator.clipboard.writeText(referralLink); toast.success('Referral link copied'); }} className="px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white">Copy Link</button>
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(referralLink);
+                      toast.success('Referral link copied');
+                    } catch {
+                      toast.error('Copy failed');
+                    }
+                  }}
+                  className="px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white"
+                >Copy Link</button>
               </div>
               <div className="mt-3 text-xs text-gray-600 dark:text-gray-400">Stats: {verifiedCount} verified / {referralCount} total</div>
+              <div className="mt-2 text-xs text-gray-500 dark:text-gray-500">Your link: <span className="font-mono">/login?ref=&lt;your-wallet&gt;</span>. Friends who join with this link are auto-whitelisted and you get points when they trade.</div>
             </section>
-
-            {/* Invite Friends */}
-            <InviteCard wallet={wallet} />
 
             {/* Security & Sessions */}
             <TwoFactorCard />

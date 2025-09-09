@@ -26,11 +26,15 @@ export default function LoginPage() {
     
     try {
       const walletAddress = publicKey.toString();
-      const urlParams = new URLSearchParams(window.location.search);
-      const invite = urlParams.get('invite');
+  const urlParams = new URLSearchParams(window.location.search);
+  const invite = urlParams.get('invite');
+  const ref = urlParams.get('ref');
       // Set cookie for middleware to read
       document.cookie = `connected-wallet=${walletAddress}; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
-      const resp = await fetch(`/api/access?wallet=${walletAddress}${invite ? `&token=${invite}` : ''}`, { cache: 'no-store' });
+  const query = new URLSearchParams({ wallet: walletAddress });
+  if (ref) query.set('ref', ref);
+  else if (invite) query.set('invite', invite);
+  const resp = await fetch(`/api/access?${query.toString()}`, { cache: 'no-store' });
       const data = await resp.json();
       if (data?.access) {
         // mark access cookie for middleware

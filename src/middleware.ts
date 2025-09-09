@@ -49,6 +49,8 @@ function shouldAllow(request: NextRequest): { ok: boolean; redirect?: URL } {
   loginUrl.searchParams.set('returnTo', request.nextUrl.pathname)
   const inviteToken = request.nextUrl.searchParams.get('invite')
   if (inviteToken) loginUrl.searchParams.set('invite', inviteToken)
+  const ref = request.nextUrl.searchParams.get('ref')
+  if (ref) loginUrl.searchParams.set('ref', ref)
   return { ok: false, redirect: loginUrl }
 }
 
