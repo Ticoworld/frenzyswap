@@ -6,6 +6,14 @@ Access control and referrals (2025-09-09)
 - Referrals: Each user has a single referral link: `/login?ref=<wallet>`. When a new user joins with this link, they are auto-whitelisted, a referral is logged, and the inviter is awarded points. No invite tokens are used. For legacy links that used `?invite=`, the value is treated as the referrer wallet.
 - Middleware: uses hasAccessOrOnboard(wallet, ref) to grant access, migrate env, or redirect to login/waitlist.
 - Login page: calls /api/access to resolve access and sets the connected-wallet cookie for middleware.
+API quick reference
+- POST /api/referrals
+	- { referrer } → { success, link, code }
+	- { referrer, referee } → { success, referral: { id, referrer, referee, status } }
+- GET /api/users?scope=all|invited|active|waitlisted&limit=&offset=
+	- Returns { data: [{ wallet, joinType, status, createdAt, lastActive }], total }
+- GET /api/analytics?period=daily|weekly|monthly|yearly
+	- Returns { data: { since, totalUsers, invitedUsers, activeUsers, farmedInvites, totalReferrals, totalSwaps, totalSessions, totalPointsEvents } }
 
 
 Edge cases

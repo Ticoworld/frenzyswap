@@ -199,7 +199,7 @@ export const trackTimeSpent = (startTime: number) => {
 };
 
 // Utility: Get visitor stats
-export const getVisitorStats = async (timeframe: '24h' | '7d' | '30d' = '24h') => {
+export const getVisitorStats = async (timeframe: '24h' | '7d' | '30d' | '365d' = '24h') => {
   if (!isAnalyticsEnabled() || isUserOptedOut()) return null;
 
   try {
@@ -213,6 +213,9 @@ export const getVisitorStats = async (timeframe: '24h' | '7d' | '30d' = '24h') =
         break;
       case '30d':
         dateFilter.setDate(dateFilter.getDate() - 30);
+        break;
+      case '365d':
+        dateFilter.setDate(dateFilter.getDate() - 365);
         break;
     }
 

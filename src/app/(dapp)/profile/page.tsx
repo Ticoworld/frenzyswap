@@ -6,14 +6,15 @@ import { motion } from 'framer-motion'
 import Badges from '@/components/common/Badges'
 import { PointsWidget, StreakWidget } from '@/components/common/PointsWidget'
 import WalletAvatar from '@/components/common/WalletAvatar'
+import Skeleton from '@/components/common/Skeleton'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
 export default function ProfilePage() {
   const { publicKey, connected } = useWallet()
   const wallet = publicKey?.toString()
-  const { data: pnl } = useSWR(wallet ? `/api/pnl?wallet=${wallet}` : null, fetcher)
-  const { data: refs } = useSWR(wallet ? `/api/referrals?wallet=${wallet}&role=referrer` : null, fetcher)
+  const { data: pnl, isLoading: lp } = useSWR(wallet ? `/api/pnl?wallet=${wallet}` : null, fetcher)
+  const { data: refs, isLoading: lr } = useSWR(wallet ? `/api/referrals?wallet=${wallet}&role=referrer` : null, fetcher)
 
   return (
     <div className="min-h-screen bg-gray-900 py-8">
@@ -34,11 +35,15 @@ export default function ProfilePage() {
               <div className="grid md:grid-cols-3 gap-4 mt-4">
                 <div className="bg-gray-900/40 rounded-lg p-4 border border-gray-700/60">
                   <div className="text-xs text-gray-400">Realized P&L</div>
-                  <div className={`text-2xl font-semibold ${pnl?.realizedPnlUsd >= 0 ? 'text-green-400' : 'text-red-400'}`}>${(pnl?.realizedPnlUsd ?? 0).toLocaleString()}</div>
+                  {lp ? <Skeleton className="h-6 w-24 mt-1" /> : (
+                    <div className={`text-2xl font-semibold ${pnl?.realizedPnlUsd >= 0 ? 'text-green-400' : 'text-red-400'}`}>${(pnl?.realizedPnlUsd ?? 0).toLocaleString()}</div>
+                  )}
                 </div>
                 <div className="bg-gray-900/40 rounded-lg p-4 border border-gray-700/60">
                   <div className="text-xs text-gray-400">Total Volume</div>
-                  <div className="text-2xl font-semibold text-white">${((pnl?.totalVolumeUsd ?? 0)).toLocaleString()}</div>
+                  {lp ? <Skeleton className="h-6 w-24 mt-1" /> : (
+                    <div className="text-2xl font-semibold text-white">${((pnl?.totalVolumeUsd ?? 0)).toLocaleString()}</div>
+                  )}
                 </div>
                 <div className="bg-gray-900/40 rounded-lg p-4 border border-gray-700/60">
                   <div className="text-xs text-gray-400">Privacy</div>
@@ -60,13 +65,17 @@ export default function ProfilePage() {
             <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <h2 className="text-xl font-semibold text-white mb-2">Referrals</h2>
               <div className="text-gray-300 text-sm space-y-1">
-                {(refs?.data || []).map((r: any) => (
+                {lr ? (
+                  <div className="flex items-center gap-2"><Skeleton className="h-4 w-40" /></div>
+                ) : (
+                  (refs?.data || []).map((r: any) => (
                   <div key={r.id} className="flex justify-between">
-                    <span>Referee: {r.referee_wallet.slice(0,4)}...{r.referee_wallet.slice(-4)}</span>
+                    <span>Referee: {r.referred_wallet?.slice(0,4)}...{r.referred_wallet?.slice(-4)}</span>
                     <span className={r.status === 'verified' ? 'text-green-400' : 'text-gray-400'}>{r.status}</span>
                   </div>
-                ))}
-                {!refs?.data?.length && <div className="text-gray-500">No referrals yet</div>}
+                  ))
+                )}
+                {!refs?.data?.length && !lr && <div className="text-gray-500">No referrals yet</div>}
               </div>
             </div>
           </div>
