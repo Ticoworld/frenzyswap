@@ -2,144 +2,117 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   PREMIUM DESIGN SYSTEM - FRENZYSWAP
+   ============================================ */
 
-/* Add vertical spacing between wallet adapters in the connect modal */
-/* .wallet-adapter-modal-list {
-  display: flex !important;
-  flex-direction: column !important;
-}
-.wallet-adapter-modal-list .wallet-adapter-modal-list-item {
-  margin-bottom: 12px !important;
-}
-.wallet-adapter-modal-list .wallet-adapter-modal-list-item:last-child {
-  margin-bottom: 0 !important;
-} */
+/* Typography - Professional font rendering */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  body {
+    @apply bg-black text-white;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
 
-body {
-  background-color: #111827; /* dark default */
-  color: #f3f4f6;
+  /* Semantic heading hierarchy */
+  h1 {
+    @apply text-display-md md:text-display-lg;
+  }
+  
+  h2 {
+    @apply text-display-sm md:text-display-md;
+  }
+  
+  h3 {
+    @apply text-heading-xl;
+  }
+  
+  h4 {
+    @apply text-heading-lg;
+  }
+  
+  h5 {
+    @apply text-heading-md;
+  }
+  
+  p {
+    @apply text-body-md leading-relaxed;
+  }
 }
 
-/* Enhanced Light theme overrides for better contrast and consistency */
+/* Light theme (premium design prefers dark, light is secondary) */
 html:not(.dark) body {
-  background-color: #f9fafb; /* gray-50 */
-  color: #111827; /* gray-900 */
+  @apply bg-surface-light text-gray-900;
 }
 
-/* Background color fixes for light mode */
-html:not(.dark) .bg-gray-900, 
-html:not(.dark) .bg-gray-900\/90, 
-html:not(.dark) .bg-gray-900\/95,
-html:not(.dark) .bg-gray-800, 
-html:not(.dark) .bg-gray-800\/50,
-html:not(.dark) .bg-gray-700,
-html:not(.dark) .bg-gray-700\/50 {
-  background-color: #ffffff !important;
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-/* Card and widget backgrounds */
-html:not(.dark) .bg-gray-800 {
-  background-color: #f8fafc !important; /* slate-50 for cards */
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-surface-card rounded-full;
 }
 
-/* Text color fixes for light mode */
-html:not(.dark) .text-gray-300, 
-html:not(.dark) .text-gray-200 { 
-  color: #374151 !important; /* gray-700 for better contrast */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-brand-purple rounded-full;
 }
 
-html:not(.dark) .text-gray-400 { 
-  color: #6b7280 !important; /* gray-500 for subtext */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-brand-purple-dark;
 }
 
-html:not(.dark) .text-gray-500 { 
-  color: #9ca3af !important; /* gray-400 for muted text */
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #8b5cf6 #1e293b;
 }
 
-/* Border color fixes for light mode */
-html:not(.dark) .border-gray-700, 
-html:not(.dark) .border-gray-700\/60, 
-html:not(.dark) .border-gray-800,
-html:not(.dark) .border-gray-600 { 
-  border-color: #e5e7eb !important; /* gray-200 */
-}
-
-/* White/black text fixes */
-html:not(.dark) .text-white { 
-  color: #111827 !important; /* gray-900 */
-}
-
-html:not(.dark) .text-black { 
-  color: #111827 !important; /* gray-900 */
-}
-
-/* Hover states for light mode */
-html:not(.dark) .hover\:bg-gray-700:hover,
-html:not(.dark) .hover\:bg-gray-800:hover {
-  background-color: #f1f5f9 !important; /* slate-100 */
-}
-
-html:not(.dark) .hover\:bg-gray-600:hover {
-  background-color: #e2e8f0 !important; /* slate-200 */
-}
-
-/* Gradient background fixes for light mode */
-html:not(.dark) .bg-gradient-to-br.from-gray-900.to-black,
-html:not(.dark) .bg-gradient-to-br.from-gray-800.to-gray-900 {
-  background: linear-gradient(to bottom right, #f8fafc, #f1f5f9) !important;
-}
-
+/* ============================================
+   WALLET ADAPTER STYLING - PREMIUM PURPLE BRAND
+   ============================================ */
+   
 .wallet-adapter-button {
-  @apply !bg-yellow-500 !text-black !font-medium hover:!bg-yellow-600 !rounded-lg !my-1;
+  @apply !bg-brand-purple hover:!bg-brand-purple/90 !text-white !font-semibold !rounded-xl !my-1 !transition-colors !border-2 !border-brand-purple;
+  box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.3);
+}
+
+.wallet-adapter-button:hover {
+  box-shadow: 0 6px 20px 0 rgba(139, 92, 246, 0.4);
 }
 
 .wallet-adapter-modal-list {
-  @apply !bg-gray-800;
+  @apply !bg-[#0a0a0a] !border-2 !border-gray-800;
 }
 
-/* Light mode wallet adapter modal */
+.wallet-adapter-modal-list-more {
+  @apply !bg-black;
+}
+
+/* Light mode wallet adapter */
 html:not(.dark) .wallet-adapter-modal-list {
-  @apply !bg-white !border !border-gray-200;
+  @apply !bg-white !border-2 !border-gray-200;
 }
 
 html:not(.dark) .wallet-adapter-modal-list-more {
   @apply !bg-gray-50;
 }
 
-.wallet-adapter-modal-list-more {
-  @apply !bg-gray-700;
-}
+/* ============================================
+   PROFESSIONAL ANIMATIONS
+   ============================================ */
 
-/* src/app/globals.css (or your main CSS file) */
-
-/* Basic scrollbar styling for Webkit browsers (Chrome, Safari, Edge) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 3px; /* width of the scrollbar */
-  height: 8px; /* height for horizontal scrollbar */
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #334155; /* bg-gray-700 equivalent */
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #60a5fa; /* A nice blue color for the thumb */
-  border-radius: 10px;
-  border: 2px solid #334155; /* space around thumb */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #3b82f6; /* Darker blue on hover */
-}
-
-/* For Firefox (requires 'scrollbar-width' and 'scrollbar-color') */
-.custom-scrollbar {
-  scrollbar-width: thin; /* "auto" or "thin" */
-  scrollbar-color: #60a5fa #334155; /* thumb color track color */
-}
-
-/* Professional shimmer animation for skeleton loaders */
+/* Shimmer for skeleton loaders */
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -153,9 +126,64 @@ html:not(.dark) .wallet-adapter-modal-list-more {
   animation: shimmer 2s infinite;
 }
 
-/* Light mode fix for export buttons in settings */
-html:not(.dark) .export-json,
-html:not(.dark) .export-csv {
-  color: #374151 !important; /* gray-700 for better contrast */
-  border-color: #e5e7eb !important;
+/* Subtle fade-in for content */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* ============================================
+   PREMIUM COMPONENT PATTERNS
+   ============================================ */
+
+/* Solid premium cards - NO weak glassmorphism */
+.glass-card {
+  @apply bg-[#0a0a0a] border-2 border-gray-800;
+}
+
+/* Premium button base */
+.btn-premium {
+  @apply px-6 py-3 rounded-xl font-semibold transition-colors border-2;
+}
+
+/* Primary CTA button - Purple only, no gradients */
+.btn-primary {
+  @apply btn-premium bg-brand-purple hover:bg-brand-purple/90 text-white border-brand-purple;
+}
+
+/* Secondary button - Outlined purple */
+.btn-secondary {
+  @apply btn-premium bg-transparent border-brand-purple text-brand-purple hover:bg-brand-purple/10;
+}
+
+/* ============================================
+   LEGACY LIGHT MODE SUPPORT (MINIMAL)
+   ============================================ */
+
+/* Light mode support for components still using old classes */
+html:not(.dark) .bg-gray-900,
+html:not(.dark) .bg-gray-800 {
+  @apply !bg-white !text-gray-900;
+}
+
+html:not(.dark) .bg-gray-700 {
+  @apply !bg-gray-50;
+}
+
+html:not(.dark) .text-gray-300,
+html:not(.dark) .text-gray-400 {
+  @apply !text-gray-700;
+}
+
+html:not(.dark) .border-gray-700,
+html:not(.dark) .border-gray-800 {
+  @apply !border-gray-200;
 }

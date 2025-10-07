@@ -44,11 +44,11 @@ export default function QuickTokenWarning({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="w-full max-w-sm bg-gray-900 rounded-lg shadow-2xl border border-yellow-500/30">
+            <Dialog.Panel className="w-full max-w-sm bg-gray-900 rounded-lg shadow-2xl border border-orange-500/30">
               <div className="p-5">
                 {/* Compact Header */}
                 <div className="flex items-center space-x-3 mb-4">
-                  <ExclamationTriangleIcon className="h-6 w-6 text-yellow-500 flex-shrink-0" />
+                  <ExclamationTriangleIcon className="h-6 w-6 text-orange-500 flex-shrink-0" />
                   <div>
                     <Dialog.Title className="text-base font-bold text-white">
                       Unverified Token
@@ -60,8 +60,8 @@ export default function QuickTokenWarning({
                 </div>
 
                 {/* Quick Risk Summary */}
-                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-yellow-200">
+                <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-orange-200">
                     {token.isJupiterFallback ? (
                       <>⚠️ This token is swappable on Jupiter but not in their verified token lists. Exercise extra caution.</>
                     ) : (
@@ -80,7 +80,7 @@ export default function QuickTokenWarning({
                   </button>
                   <button
                     onClick={onConfirm}
-                    className="flex-1 px-3 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium"
+                    className="flex-1 px-3 py-2 bg-brand-purple text-white rounded-lg hover:bg-brand-purple/90 transition-colors text-sm font-medium"
                   >
                     Trade Anyway
                   </button>

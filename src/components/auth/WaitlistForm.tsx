@@ -69,20 +69,20 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center py-6"
+        className="text-center py-4 sm:py-6"
       >
-        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FiCheck className="text-green-500 text-3xl" />
+        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+          <FiCheck className="text-green-500 text-2xl sm:text-3xl" />
         </div>
-        <h3 className="text-green-400 font-bold text-lg mb-2">You&apos;re on the waitlist! 🎉</h3>
-        <p className="text-gray-400 text-sm mb-4">
+        <h3 className="text-green-400 font-bold text-base sm:text-lg mb-2">You&apos;re on the waitlist! 🎉</h3>
+        <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">
           We&apos;ll notify you when beta access opens up.
         </p>
         {position && (
-          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 mb-4">
+          <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
             <div className="flex items-center justify-center space-x-2">
-              <FiUsers className="text-green-500" />
-              <span className="text-green-400 font-medium">
+              <FiUsers className="text-green-500 text-sm sm:text-base" />
+              <span className="text-green-400 font-medium text-sm sm:text-base">
                 Position #{position} in waitlist
               </span>
             </div>
@@ -99,20 +99,20 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
+      className="space-y-3 sm:space-y-4"
     >
-      <div className="text-center mb-4">
-        <h3 className="text-white font-bold text-lg mb-2">Join the Waitlist</h3>
-        <p className="text-gray-400 text-sm">
+      <div className="text-center mb-3 sm:mb-4">
+        <h3 className="text-white font-bold text-base sm:text-lg mb-2">Join the Waitlist</h3>
+        <p className="text-gray-400 text-xs sm:text-sm">
           Be the first to know when FrenzySwap opens to public
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         {/* Wallet Address */}
         {isLandingPage ? (
           <div>
-            <label htmlFor="wallet" className="block text-sm text-gray-400 mb-2">
+            <label htmlFor="wallet" className="block text-xs sm:text-sm text-gray-400 mb-2">
               Solana Wallet Address <span className="text-red-400">*</span>
             </label>
             <input
@@ -121,14 +121,14 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
               value={manualWallet}
               onChange={(e) => setManualWallet(e.target.value)}
               placeholder="Enter your Solana wallet address"
-              className="w-full bg-gray-700 text-white rounded-lg px-4 py-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full bg-gray-700 text-white rounded-lg px-3 sm:px-4 py-2 sm:py-3 font-mono text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
               required
             />
           </div>
         ) : (
-          <div className="bg-gray-700 rounded-lg p-3">
-            <label className="block text-sm text-gray-400 mb-1">Wallet Address</label>
-            <div className="text-white font-mono text-sm break-all">
+          <div className="bg-gray-700 rounded-lg p-2 sm:p-3">
+            <label className="block text-xs sm:text-sm text-gray-400 mb-1">Wallet Address</label>
+            <div className="text-white font-mono text-xs sm:text-sm break-all">
               {walletAddress}
             </div>
           </div>
@@ -136,18 +136,18 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
 
         {/* Email Input */}
         <div>
-          <label htmlFor="email" className="block text-sm text-gray-400 mb-2">
+          <label htmlFor="email" className="block text-xs sm:text-sm text-gray-400 mb-2">
             Email <span className="text-gray-500">(optional but recommended)</span>
           </label>
           <div className="relative">
-            <FiMail className="absolute left-3 top-3 text-gray-400" />
+            <FiMail className="absolute left-3 top-2 sm:top-3 text-gray-400 text-sm sm:text-base" />
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your.email@example.com"
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              className="w-full bg-gray-700 border border-gray-600 rounded-lg pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent text-sm sm:text-base"
             />
           </div>
           <p className="text-gray-500 text-xs mt-1">
@@ -157,10 +157,10 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+          <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-2 sm:p-3">
             <div className="flex items-center space-x-2">
-              <FiAlertCircle className="text-red-500 flex-shrink-0" />
-              <span className="text-red-400 text-sm">{error}</span>
+              <FiAlertCircle className="text-red-500 flex-shrink-0 text-sm sm:text-base" />
+              <span className="text-red-400 text-xs sm:text-sm">{error}</span>
             </div>
           </div>
         )}
@@ -171,11 +171,11 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={loading}
-          className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-3 px-6 rounded-xl transition-colors"
+          className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-xl transition-colors text-sm sm:text-base"
         >
           {loading ? (
             <div className="flex items-center justify-center space-x-2">
-              <div className="animate-spin w-4 h-4 border-2 border-black border-t-transparent rounded-full"></div>
+              <div className="animate-spin w-3 h-3 sm:w-4 sm:h-4 border-2 border-black border-t-transparent rounded-full"></div>
               <span>Joining waitlist...</span>
             </div>
           ) : (
@@ -184,7 +184,7 @@ export default function WaitlistForm({ walletAddress, source, onSuccess }: Waitl
         </motion.button>
       </form>
 
-      <div className="bg-gray-900 rounded-lg p-3 text-center">
+      <div className="bg-gray-900 rounded-lg p-2 sm:p-3 text-center">
         <p className="text-gray-400 text-xs leading-relaxed">
           By joining the waitlist, you&apos;ll be among the first to access FrenzySwap when we expand beyond our current beta users.
         </p>

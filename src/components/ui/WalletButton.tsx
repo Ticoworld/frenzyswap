@@ -25,7 +25,7 @@ export default function WalletButton({ className }: WalletButtonProps) {
 
   return (
     <div className={`wallet-adapter-button-wrapper ${className ?? ""}`}>
-      <WalletMultiButton className="!bg-yellow-500 !text-black !font-medium hover:!bg-yellow-600 !rounded-lg my-2">
+      <WalletMultiButton className="!bg-brand-purple !text-white !font-medium hover:!bg-brand-purple/90 !rounded-lg my-2">
         {getButtonText()}
       </WalletMultiButton>
     </div>

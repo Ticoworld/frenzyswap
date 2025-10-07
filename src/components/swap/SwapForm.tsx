@@ -570,11 +570,11 @@ export default function SwapForm() {
   };
 
   return (
-    <div className="bg-gray-800 rounded-2xl p-3 sm:p-6 shadow-xl w-full max-w-[calc(100vw-1rem)] sm:max-w-md border border-gray-700 mx-auto min-h-fit">
+    <div className="bg-black/60 backdrop-blur-xl rounded-2xl p-3 sm:p-6 shadow-2xl shadow-brand-purple/5 w-full max-w-[calc(100vw-1rem)] sm:max-w-md border-2 border-brand-purple/10 hover:border-brand-purple/20 transition-all duration-300 mx-auto min-h-fit">
       {/* Header with Network Status */}
       <div className="flex justify-between items-center mb-3 sm:mb-4">
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <h1 className="text-base sm:text-lg lg:text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+          <h1 className="text-base sm:text-lg lg:text-xl font-bold text-brand-purple">
             FRENZYSWAP
           </h1>
           <NetworkStatus showLabel={false} className="hidden sm:flex" />
@@ -597,7 +597,7 @@ export default function SwapForm() {
         />
       ) : isConfirming ? (
         <div className="flex flex-col items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-purple mb-4"></div>
           <h3 className="text-lg font-medium mb-1">Confirming Swap</h3>
           <p className="text-gray-400 text-sm">Approve the transaction in your wallet</p>
         </div>
@@ -608,12 +608,12 @@ export default function SwapForm() {
           className="space-y-3 sm:space-y-4"
         >
           {/* FROM */}
-          <div className="bg-gray-800 rounded-xl p-3 sm:p-4 border border-gray-700">
+          <div className="bg-black/40 backdrop-blur-md rounded-xl p-3 sm:p-4 border-2 border-gray-800/50 hover:border-brand-purple/30 transition-colors">
             <div className="flex justify-between items-center mb-2">
               <label className="text-gray-400 text-sm font-medium">From</label>
               <div className="flex space-x-1 sm:space-x-2">
                 <button
-                  className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500"
+                  className="text-xs bg-black/60 border border-gray-800 hover:border-brand-purple hover:bg-brand-purple/10 text-gray-300 px-2 py-1 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-purple"
                   onClick={() => handleMaxClick(0.25)}
                   disabled={!balance || !connected}
                   aria-label="Use 25% of balance"
@@ -621,7 +621,7 @@ export default function SwapForm() {
                   25%
                 </button>
                 <button
-                  className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500"
+                  className="text-xs bg-black/60 border border-gray-800 hover:border-brand-purple hover:bg-brand-purple/10 text-gray-300 px-2 py-1 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-purple"
                   onClick={() => handleMaxClick(0.5)}
                   disabled={!balance || !connected}
                   aria-label="Use 50% of balance"
@@ -629,7 +629,7 @@ export default function SwapForm() {
                   50%
                 </button>
                 <button
-                  className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors focus:outline-none focus:ring-1 focus:ring-gray-500"
+                  className="text-xs bg-black/60 border border-gray-800 hover:border-brand-purple hover:bg-brand-purple/10 text-gray-300 px-2 py-1 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-purple"
                   onClick={() => handleMaxClick(0.75)}
                   disabled={!balance || !connected}
                   aria-label="Use 75% of balance"
@@ -637,7 +637,7 @@ export default function SwapForm() {
                   75%
                 </button>
                 <button
-                  className="text-xs bg-yellow-500 hover:bg-yellow-400 text-black px-2 py-1 rounded font-medium transition-colors focus:outline-none focus:ring-1 focus:ring-yellow-600"
+                  className="text-xs bg-brand-purple hover:bg-brand-purple/90 text-white px-2 py-1 rounded-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-brand-purple border-2 border-brand-purple"
                   onClick={() => handleMaxClick(1)}
                   disabled={!balance || !connected}
                   aria-label="Use maximum balance"
@@ -684,7 +684,7 @@ export default function SwapForm() {
                   {balance > 0 && (
                     <button 
                       onClick={() => handleMaxClick(1)}
-                      className="text-yellow-500 hover:text-yellow-400 text-xs underline focus:outline-none focus:ring-1 focus:ring-yellow-500 rounded"
+                      className="text-brand-purple hover:text-brand-purple/80 text-xs underline focus:outline-none focus:ring-2 focus:ring-brand-purple rounded"
                       aria-label={`Use maximum ${fromToken?.symbol} balance`}
                     >
                       Use Max
@@ -706,7 +706,7 @@ export default function SwapForm() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleShare}
-              className="bg-gray-900 border-2 border-gray-800 p-2 rounded-full text-blue-500 hover:bg-gray-800 hover:border-blue-500 transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              className="bg-black/60 border-2 border-gray-800 p-2 rounded-full text-brand-purple hover:bg-brand-purple/10 hover:border-brand-purple transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 focus:ring-offset-black"
               aria-label="Share swap link"
               disabled={!fromToken || !toToken}
             >
@@ -715,10 +715,10 @@ export default function SwapForm() {
 
             {/* Flip Button */}
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, rotate: 180 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSwapTokens}
-              className="bg-gray-900 border-2 border-gray-800 p-2 rounded-full text-yellow-500 hover:bg-gray-800 hover:border-yellow-500 transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+              className="bg-black/60 border-2 border-brand-purple p-2 rounded-full text-brand-purple hover:bg-brand-purple/10 hover:border-brand-purple transition-all shadow-lg hover:shadow-brand-purple/20 focus:outline-none focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 focus:ring-offset-black"
               aria-label="Swap token positions"
               disabled={!fromToken || !toToken}
             >
@@ -727,7 +727,7 @@ export default function SwapForm() {
           </div>
 
           {/* TO */}
-          <div className="bg-gray-800 rounded-xl p-3 sm:p-4 border border-gray-700">
+          <div className="bg-black/40 backdrop-blur-md rounded-xl p-3 sm:p-4 border-2 border-gray-800/50 hover:border-brand-purple/30 transition-colors">
             <div className="mb-2 text-gray-400 text-sm font-medium">To</div>
             <div className="flex items-center">
               <div className="flex-1">
@@ -795,7 +795,7 @@ export default function SwapForm() {
                     <span className="text-gray-400">Price Impact</span>
                     {priceImpact > 2 && (
                       <FaInfoCircle 
-                        className="h-3 w-3 text-yellow-500" 
+                        className="h-3 w-3 text-brand-purple" 
                         title="High price impact warning"
                       />
                     )}
@@ -805,20 +805,20 @@ export default function SwapForm() {
                   </span>
                 </div>
               )}
-              <div className="border-t border-gray-700 pt-3 space-y-2">
+              <div className="border-t border-gray-800 pt-3 space-y-2">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400 text-xs">MEME Fee (0.2%)</span>
-                  <span className="text-yellow-500 text-xs font-medium">
+                  <span className="text-brand-purple text-xs font-medium">
                     {memeFee.toFixed(6)} {fromToken.symbol}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-400 text-xs">Referral Fee (0.1%)</span>
-                  <span className="text-purple-400 text-xs font-medium">
+                  <span className="text-brand-purple text-xs font-medium opacity-70">
                     {referralFee.toFixed(6)} {fromToken.symbol}
                   </span>
                 </div>
-                <div className="flex justify-between items-center pt-1 border-t border-gray-700">
+                <div className="flex justify-between items-center pt-1 border-t border-gray-800">
                   <span className="text-gray-300 text-xs font-medium">Total Fees</span>
                   <span className="text-gray-300 text-xs font-medium">
                     {(memeFee + referralFee).toFixed(6)} {fromToken.symbol}
@@ -829,11 +829,11 @@ export default function SwapForm() {
           ) : null}
 
           {/* BURN NOTICE */}
-          <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-xl p-3 flex items-start">
-            <div className="bg-yellow-500/20 p-1 rounded mr-2 mt-0.5 flex-shrink-0">
-              <FaFire className="h-4 w-4 text-yellow-500" />
+          <div className="bg-brand-purple/10 border-2 border-brand-purple/20 rounded-xl p-3 flex items-start backdrop-blur-sm">
+            <div className="bg-brand-purple/20 p-1 rounded mr-2 mt-0.5 flex-shrink-0">
+              <FaFire className="h-4 w-4 text-brand-purple" />
             </div>
-            <p className="text-yellow-500 text-xs sm:text-sm">
+            <p className="text-brand-purple text-xs sm:text-sm">
               {memeFee.toFixed(6)} {fromToken?.symbol} will be used to buyback and burn MEME tokens
             </p>
           </div>

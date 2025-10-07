@@ -12,7 +12,7 @@ export default function MobileQuickNav() {
     <div className="md:hidden fixed bottom-3 left-0 right-0 z-[90]">
       <div className="mx-auto w-[min(96%,480px)] flex items-center justify-between gap-2 rounded-xl bg-gray-800/95 border border-gray-700 shadow-lg px-3 py-2" role="navigation" aria-label="Quick navigation">
         <Link href="/help/quick-start" className="flex-1 text-center py-2 rounded text-gray-200 bg-gray-700/50 hover:bg-gray-700">{t('nav.quickStart')}</Link>
-        <Link href="/settings" className="flex-1 text-center py-2 rounded text-black bg-yellow-600 hover:bg-yellow-500">{t('nav.settings')}</Link>
+        <Link href="/settings" className="flex-1 text-center py-2 rounded text-white bg-brand-purple hover:bg-brand-purple/90">{t('nav.settings')}</Link>
       </div>
     </div>
   );

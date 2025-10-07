@@ -49,7 +49,7 @@ export default function OnboardingHelpCard() {
         <li><a href="/help/support" className="underline">Support</a> — Contact form and chat links.</li>
       </ul>
       <div className="mt-3">
-        <button onClick={()=>{ setStep(0); setOpen(true); }} className="px-3 py-2 rounded bg-yellow-600 text-black hover:bg-yellow-500">Start Tour</button>
+        <button onClick={()=>{ setStep(0); setOpen(true); }} className="px-3 py-2 rounded bg-brand-purple text-white hover:bg-brand-purple/90">Start Tour</button>
       </div>
       <div className="mt-2 text-xs text-gray-500">Interactive guide is a lightweight modal here; can be replaced with a full tour library later.</div>
 
@@ -65,9 +65,9 @@ export default function OnboardingHelpCard() {
               <button onClick={()=> setStep(s => Math.max(0, s-1))} disabled={step===0} className="px-3 py-1.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 disabled:opacity-50">Prev</button>
               <div className="space-x-2">
                 {step < steps.length-1 ? (
-                  <button onClick={()=> setStep(s => Math.min(steps.length-1, s+1))} className="px-3 py-1.5 rounded bg-yellow-500 dark:bg-yellow-600 text-black">Next</button>
+                  <button onClick={()=> setStep(s => Math.min(steps.length-1, s+1))} className="px-3 py-1.5 rounded bg-brand-purple text-white">Next</button>
                 ) : (
-                  <button onClick={()=> setOpen(false)} className="px-3 py-1.5 rounded bg-yellow-500 dark:bg-yellow-600 text-black">Done</button>
+                  <button onClick={()=> setOpen(false)} className="px-3 py-1.5 rounded bg-brand-purple text-white">Done</button>
                 )}
               </div>
             </div>

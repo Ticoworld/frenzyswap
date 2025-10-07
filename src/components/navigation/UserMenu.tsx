@@ -51,7 +51,7 @@ export default function UserMenu({ initialPrivate = false }: { initialPrivate?: 
 
   return (
     <Menu as="div" className="relative inline-block text-left">
-      <Menu.Button className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500">
+      <Menu.Button className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple">
         <UserIcon className="h-4 w-4" />
         Account
         <ChevronDownIcon className="ml-1 h-4 w-4" aria-hidden="true" />
@@ -60,13 +60,13 @@ export default function UserMenu({ initialPrivate = false }: { initialPrivate?: 
       <Transition as={Fragment}
         enter="transition ease-out duration-100" enterFrom="transform opacity-0 scale-95" enterTo="transform opacity-100 scale-100"
         leave="transition ease-in duration-75" leaveFrom="transform opacity-100 scale-100" leaveTo="transform opacity-0 scale-95">
-        <Menu.Items className="absolute right-0 z-50 mt-2 w-72 origin-top-right rounded-md bg-gray-900/95 backdrop-blur border border-gray-800 shadow-lg focus:outline-none">
+        <Menu.Items className="absolute right-0 z-50 mt-2 w-72 origin-top-right rounded-md bg-black/80 backdrop-blur-xl border-2 border-brand-purple/20 shadow-lg focus:outline-none">
           <div className="p-3 border-b border-gray-800 text-xs text-gray-400">Wallet & profile</div>
           <div className="py-2">
             <Menu.Item>
               {({ active }) => (
-                <Link href="/profile" className={classNames(active ? 'bg-gray-800/60 text-white' : 'text-gray-300', 'flex items-center gap-3 px-4 py-3 text-sm')}>
-                  <UserIcon className="h-4 w-4 text-yellow-500" />
+                <Link href="/profile" className={classNames(active ? 'bg-brand-purple/10 text-white' : 'text-gray-300', 'flex items-center gap-3 px-4 py-3 text-sm')}>
+                  <UserIcon className="h-4 w-4 text-brand-purple" />
                   Profile
                 </Link>
               )}
@@ -74,15 +74,15 @@ export default function UserMenu({ initialPrivate = false }: { initialPrivate?: 
 
             <div className="px-4 py-3 flex items-center justify-between text-sm">
               <div className="flex items-center gap-2 text-gray-300">
-                {isPrivate ? <EyeOffIcon className="h-4 w-4 text-yellow-500" /> : <EyeIcon className="h-4 w-4 text-yellow-500" />}
+                {isPrivate ? <EyeOffIcon className="h-4 w-4 text-brand-purple" /> : <EyeIcon className="h-4 w-4 text-brand-purple" />}
                 Privacy
               </div>
               <Switch
                 checked={isPrivate}
                 onChange={togglePrivacy}
                 className={classNames(
-                  isPrivate ? 'bg-yellow-600' : 'bg-gray-700',
-                  'relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500'
+                  isPrivate ? 'bg-brand-purple' : 'bg-gray-700',
+                  'relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple'
                 )}
               >
                 <span
@@ -97,8 +97,8 @@ export default function UserMenu({ initialPrivate = false }: { initialPrivate?: 
 
             <Menu.Item>
               {({ active }) => (
-                <Link href="/referrals" className={classNames(active ? 'bg-gray-800/60 text-white' : 'text-gray-300', 'flex items-center gap-3 px-4 py-3 text-sm')}>
-                  <ShieldIcon className="h-4 w-4 text-yellow-500" />
+                <Link href="/referrals" className={classNames(active ? 'bg-brand-purple/10 text-white' : 'text-gray-300', 'flex items-center gap-3 px-4 py-3 text-sm')}>
+                  <ShieldIcon className="h-4 w-4 text-brand-purple" />
                   Referrals
                 </Link>
               )}
@@ -106,16 +106,16 @@ export default function UserMenu({ initialPrivate = false }: { initialPrivate?: 
 
             <Menu.Item>
               {({ active }) => (
-                <Link href="/settings" className={classNames(active ? 'bg-gray-800/60 text-white' : 'text-gray-300', 'flex items-center gap-3 px-4 py-3 text-sm')}>
-                  <SettingsIcon className="h-4 w-4 text-yellow-500" />
+                <Link href="/settings" className={classNames(active ? 'bg-brand-purple/10 text-white' : 'text-gray-300', 'flex items-center gap-3 px-4 py-3 text-sm')}>
+                  <SettingsIcon className="h-4 w-4 text-brand-purple" />
                   Settings
                 </Link>
               )}
             </Menu.Item>
           </div>
           <div className="border-t border-gray-800 p-2">
-            <button onClick={() => setConfirmOpen(true)} className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-gray-800/60 rounded-md">
-              <LogOutIcon className="h-4 w-4 text-yellow-500" /> Disconnect
+            <button onClick={() => setConfirmOpen(true)} className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-brand-purple/10 rounded-md">
+              <LogOutIcon className="h-4 w-4 text-brand-purple" /> Disconnect
             </button>
           </div>
         </Menu.Items>

@@ -99,7 +99,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
               ref={firstLinkRef}
               href="/swap"
               onClick={onClose}
-              className={pathname === '/swap' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+              className={pathname === '/swap' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
             >
               Swap
             </Link>
@@ -112,7 +112,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
                 key={i.href}
                 href={i.href}
                 onClick={onClose}
-                className={pathname === i.href ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+                className={pathname === i.href ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
               >
                 {i.label}
               </Link>
@@ -126,7 +126,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
                 key={i.href}
                 href={i.href}
                 onClick={onClose}
-                className={pathname === i.href ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+                className={pathname === i.href ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
               >
                 {i.label}
               </Link>
@@ -140,11 +140,11 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
                 key={i.href}
                 href={i.href}
                 onClick={onClose}
-                className={pathname === i.href ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+                className={pathname === i.href ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
               >
                 {i.label}
                 {i.badge && (
-                  <span className="ml-2 text-xxs uppercase bg-yellow-600 text-black rounded px-1.5 py-0.5">
+                  <span className="ml-2 text-xxs uppercase bg-brand-purple text-white rounded px-1.5 py-0.5">
                     {i.badge}
                   </span>
                 )}
@@ -157,21 +157,21 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
             <Link
               href="/settings"
               onClick={onClose}
-              className={pathname === '/settings' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+              className={pathname === '/settings' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
             >
               Settings
             </Link>
             <Link
               href="/profile"
               onClick={onClose}
-              className={pathname === '/profile' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+              className={pathname === '/profile' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
             >
               Profile
             </Link>
             <Link
               href="/referrals"
               onClick={onClose}
-              className={pathname === '/referrals' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
+              className={pathname === '/referrals' ? 'block px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-brand-purple dark:text-brand-purple' : 'block px-3 py-2 rounded text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}
             >
               Referrals
             </Link>

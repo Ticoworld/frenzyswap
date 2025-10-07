@@ -4,11 +4,15 @@ import SwapForm from '@/components/swap/SwapForm';
 
 export default function SwapPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Swap Tokens</h1>
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black flex items-center justify-center px-4 py-20">
+      <div className="w-full max-w-md relative">
+        {/* Ambient glow effect */}
+        <div className="absolute -inset-8 bg-brand-purple/5 blur-3xl rounded-full pointer-events-none" />
         
-        <SwapForm />
+        {/* Swap form with relative positioning */}
+        <div className="relative z-10">
+          <SwapForm />
+        </div>
       </div>
     </div>
   );

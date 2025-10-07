@@ -114,7 +114,7 @@ export default function MultiWalletCard({ wallet }: { wallet?: string | null }) 
       <ul className="mt-3 space-y-2 text-sm">
         {list.map(w => (
           <li key={w.linked_wallet} className="flex items-center justify-between bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700/60 rounded p-3">
-            <span className="font-mono text-gray-800 dark:text-gray-200">{w.linked_wallet.slice(0,6)}…{w.linked_wallet.slice(-6)} {w.is_primary && <span className="ml-2 text-xxs uppercase bg-yellow-400 text-black rounded px-1.5 py-0.5">{t('wallets.primary')}</span>}</span>
+            <span className="font-mono text-gray-800 dark:text-gray-200">{w.linked_wallet.slice(0,6)}…{w.linked_wallet.slice(-6)} {w.is_primary && <span className="ml-2 text-xxs uppercase bg-brand-purple text-white rounded px-1.5 py-0.5">{t('wallets.primary')}</span>}</span>
             <div className="flex items-center gap-2">
               <button aria-label={`Set ${w.linked_wallet} as primary`} onClick={() => setPrimary(w.linked_wallet)} disabled={w.is_primary || actionId === w.linked_wallet} className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 disabled:opacity-50">
                 {actionId === w.linked_wallet ? '…' : t('wallets.setPrimary')}

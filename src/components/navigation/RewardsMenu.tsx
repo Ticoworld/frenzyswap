@@ -13,7 +13,7 @@ function classNames(...classes: (string | false | undefined)[]) {
 export default function RewardsMenu() {
   return (
     <Menu as="div" className="relative inline-block text-left">
-      <Menu.Button className="inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500">
+      <Menu.Button className="inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple">
         <GiftIcon className="h-4 w-4" />
         Rewards
         <ChevronDownIcon className="ml-1 h-4 w-4" aria-hidden="true" />
@@ -28,7 +28,7 @@ export default function RewardsMenu() {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute left-0 z-50 mt-2 w-64 origin-top-left rounded-md bg-gray-900/95 backdrop-blur border border-gray-800 shadow-lg focus:outline-none">
+        <Menu.Items className="absolute left-0 z-50 mt-2 w-64 origin-top-left rounded-md bg-black/80 backdrop-blur-xl border-2 border-brand-purple/20 shadow-lg focus:outline-none">
           <div className="py-2">
             {rewardsNav.map((item) => (
               <Menu.Item key={item.href}>
@@ -36,14 +36,14 @@ export default function RewardsMenu() {
                   <Link
                     href={item.href}
                     className={classNames(
-                      active ? 'bg-gray-800/60 text-white' : 'text-gray-300',
+                      active ? 'bg-brand-purple/10 text-white' : 'text-gray-300',
                       'flex items-start gap-3 px-4 py-3 text-sm'
                     )}
                   >
                     {/* Simple icons mapping */}
-                    {item.label === 'Leaderboards' && <TrophyIcon className="h-4 w-4 mt-0.5 text-yellow-500" />}
-                    {item.label === 'Badges' && <GiftIcon className="h-4 w-4 mt-0.5 text-yellow-500" />}
-                    {item.label === 'Referrals' && <UserPlusIcon className="h-4 w-4 mt-0.5 text-yellow-500" />}
+                    {item.label === 'Leaderboards' && <TrophyIcon className="h-4 w-4 mt-0.5 text-brand-purple" />}
+                    {item.label === 'Badges' && <GiftIcon className="h-4 w-4 mt-0.5 text-brand-purple" />}
+                    {item.label === 'Referrals' && <UserPlusIcon className="h-4 w-4 mt-0.5 text-brand-purple" />}
                     <div>
                       <div className="font-medium">{item.label}</div>
                       {item.description && (

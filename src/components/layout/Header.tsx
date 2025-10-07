@@ -6,44 +6,42 @@ import { usePathname } from "next/navigation";
 import WalletButton from "@/components/ui/WalletButton";
 import { motion } from "framer-motion";
 import { HiMenu, HiX } from "react-icons/hi";
-import { useState, useEffect } from "react"; // <--- Import useEffect
+import { useState, useEffect } from "react";
 
 const navItems = [
   { path: "/", label: "Home" },
   { path: "/swap", label: "Swap" },
-  { path: "/nfts", label: "NFTs" },
-  { path: "/staking", label: "Staking" },
-  { path: "/dao", label: "DAO" },
+  { path: "/analytics", label: "Analytics" },
+  { path: "/portfolio", label: "Portfolio" },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isClient, setIsClient] = useState(false); // <--- New state for client-side rendering
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // This effect runs only once after the component mounts on the client
     setIsClient(true);
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <header className="sticky top-0 z-50 bg-black/60 backdrop-blur-xl border-b-2 border-brand-purple/10">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center group">
               {/* Large screen logo */}
               <img
                 src="/assets/logos/Frenzyswap.svg"
                 alt="FrenzySwap Logo"
-                className="h-10 w-auto hidden md:block"
+                className="h-10 w-auto hidden md:block transition-opacity group-hover:opacity-80"
               />
               {/* Small screen logo */}
               <img
-                src="/assets/logos/frenzyswap_logomark.svg"
+                src="/frenzyswap_logomark.svg"
                 alt="FrenzySwap Logo"
-                className="h-10 w-auto md:hidden"
+                className="h-10 w-auto md:hidden transition-opacity group-hover:opacity-80"
               />
             </Link>
           </div>
@@ -54,17 +52,17 @@ export default function Header() {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`relative px-4 py-2 rounded-lg transition-colors ${
+                className={`relative px-4 py-2 rounded-card text-body-md font-medium transition-all duration-300 ${
                   pathname === item.path
-                    ? "text-yellow-600 dark:text-yellow-500"
-                    : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                    ? "text-brand-purple"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 {item.label}
                 {pathname === item.path && (
                   <motion.div
                     layoutId="navigation-underline"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-600 dark:bg-yellow-500"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-purple to-brand-blue rounded-full"
                     initial={false}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
@@ -75,51 +73,45 @@ export default function Header() {
 
           {/* Wallet Button & Mobile Menu Toggle */}
           <div className="flex items-center space-x-4">
-            {/* Render WalletButton only if on the client-side */}
             {isClient && (
               <WalletButton className="hidden md:block" />
             )}
 
-            {/* Mobile Menu Button (hydration-safe for icons) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-              aria-label="Toggle mobile menu" // <--- Added for accessibility
+              className="lg:hidden text-gray-400 hover:text-white transition-colors"
+              aria-label="Toggle mobile menu"
             >
-              {/* Conditionally render icons only on client */}
-              {isClient ? ( // <--- Use isClient for conditional rendering
+              {isClient ? (
                 mobileMenuOpen ? (
                   <HiX className="h-6 w-6" />
                 ) : (
                   <HiMenu className="h-6 w-6" />
                 )
               ) : (
-                // Render a placeholder on the server to prevent mismatch
-                // A simple span or div that occupies space without specific content
-                <span className="block h-6 w-6" /> 
+                <span className="block h-6 w-6" />
               )}
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {/* Only render mobile menu content if it's open AND on the client */}
-        {mobileMenuOpen && isClient && ( // <--- Add isClient check here
+        {mobileMenuOpen && isClient && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden py-4 border-t border-gray-200 dark:border-gray-800"
+            className="lg:hidden py-4 border-t border-white/10"
           >
             <div className="flex flex-col space-y-2">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   href={item.path}
-                  className={`px-4 py-3 rounded-lg transition-colors ${
+                  className={`px-4 py-3 rounded-card text-body-md font-medium transition-all duration-300 ${
                     pathname === item.path
-                      ? "bg-gray-100 dark:bg-gray-800 text-yellow-600 dark:text-yellow-500"
-                      : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+                      ? "bg-brand-purple/10 text-brand-purple border border-brand-purple/30"
+                      : "text-gray-400 hover:bg-white/5 hover:text-white"
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
@@ -127,8 +119,7 @@ export default function Header() {
                 </Link>
               ))}
               <div className="px-4 pt-2">
-                {/* Render WalletButton in mobile menu only on client */}
-                <WalletButton className="w-full" /> 
+                <WalletButton className="w-full" />
               </div>
             </div>
           </motion.div>

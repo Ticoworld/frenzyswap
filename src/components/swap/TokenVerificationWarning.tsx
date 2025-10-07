@@ -59,12 +59,12 @@ export default function TokenVerificationWarning({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="w-full max-w-md bg-gray-900 rounded-xl shadow-2xl border border-yellow-500/20">
+            <Dialog.Panel className="w-full max-w-md bg-[#0a0a0a] rounded-2xl shadow-2xl border-2 border-brand-purple/20">
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="flex-shrink-0">
-                    <ExclamationTriangleIcon className="h-8 w-8 text-yellow-500" />
+                    <ExclamationTriangleIcon className="h-8 w-8 text-brand-purple" />
                   </div>
                   <div>
                     <Dialog.Title className="text-lg font-bold text-white">
@@ -77,9 +77,9 @@ export default function TokenVerificationWarning({
                 </div>
 
                 {/* Token Info */}
-                <div className="bg-gray-800 rounded-lg p-4 mb-4">
+                <div className="bg-black border-2 border-gray-800 rounded-xl p-4 mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-800 flex items-center justify-center text-white font-semibold text-sm">
                       {token.symbol.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
@@ -94,14 +94,14 @@ export default function TokenVerificationWarning({
 
                 {/* Warning Content */}
                 <div className="space-y-4 mb-6">
-                  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
+                  <div className="bg-brand-purple/10 border-2 border-brand-purple/20 rounded-xl p-4">
                     <div className="flex items-start space-x-2">
-                      <ShieldExclamationIcon className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                      <ShieldExclamationIcon className="h-5 w-5 text-brand-purple mt-0.5 flex-shrink-0" />
                       <div>
-                        <h4 className="font-semibold text-yellow-200 mb-1">
+                        <h4 className="font-semibold text-brand-purple mb-1">
                           This token is not verified
                         </h4>
-                        <p className="text-sm text-yellow-300/80">
+                        <p className="text-sm text-gray-400">
                           {isFromDexScreener ? (
                             <>This token was found on DexScreener and may be a newly created or experimental token. It has not been verified by Jupiter&apos;s strict token list.</>
                           ) : (
@@ -123,8 +123,8 @@ export default function TokenVerificationWarning({
                     </ul>
                   </div>
 
-                  <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                    <p className="text-sm text-blue-300">
+                  <div className="bg-brand-purple/10 border-2 border-brand-purple/20 rounded-xl p-3">
+                    <p className="text-sm text-gray-300">
                       💡 <strong>Tip:</strong> Always do your own research (DYOR) before trading unverified tokens. 
                       Check the token&apos;s website, social media, and community before investing.
                     </p>
@@ -138,7 +138,7 @@ export default function TokenVerificationWarning({
                       type="checkbox"
                       checked={understood}
                       onChange={(e) => setUnderstood(e.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-gray-600 bg-gray-700 text-yellow-500 focus:ring-yellow-500 focus:ring-offset-gray-900"
+                      className="mt-1 h-4 w-4 rounded border-gray-600 bg-gray-900 text-brand-purple focus:ring-brand-purple focus:ring-offset-black"
                     />
                     <span className="text-sm text-gray-300">
                       I understand the risks and want to proceed with trading this unverified token.
@@ -150,17 +150,17 @@ export default function TokenVerificationWarning({
                 <div className="flex space-x-3">
                   <button
                     onClick={handleClose}
-                    className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="flex-1 px-4 py-2 bg-transparent border-2 border-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleConfirm}
                     disabled={!understood}
-                    className={`flex-1 px-4 py-2 rounded-lg transition-colors focus:outline-none focus:ring-2 ${
+                    className={`flex-1 px-4 py-2 rounded-xl transition-colors focus:outline-none focus:ring-2 border-2 ${
                       understood
-                        ? 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500'
-                        : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                        ? 'bg-brand-purple text-white hover:bg-brand-purple/90 focus:ring-brand-purple border-brand-purple'
+                        : 'bg-gray-900 text-gray-500 cursor-not-allowed border-gray-800'
                     }`}
                   >
                     Proceed Anyway

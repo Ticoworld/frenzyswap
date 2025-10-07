@@ -31,10 +31,10 @@ export default function ErrorDisplay({
         errorLower.includes('price impact too high')) {
       return {
         icon: ExclamationTriangleIcon,
-        bgColor: 'bg-yellow-500/10',
-        borderColor: 'border-yellow-500/30',
-        textColor: 'text-yellow-400',
-        iconColor: 'text-yellow-500',
+        bgColor: 'bg-orange-500/10',
+        borderColor: 'border-orange-500/30',
+        textColor: 'text-orange-400',
+        iconColor: 'text-orange-500',
         type: 'warning',
         title: 'Trading Limitation'
       };
@@ -158,7 +158,7 @@ export default function ErrorDisplay({
         {shouldShowRetry && (
           <div className="flex justify-center pt-1">
             <button
-              className="px-4 py-2 bg-yellow-500 text-black rounded-lg text-sm font-bold hover:bg-yellow-600 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              className="px-4 py-2 bg-brand-purple text-white rounded-lg text-sm font-bold hover:bg-brand-purple/90 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-purple focus:ring-offset-2 focus:ring-offset-gray-800"
               onClick={onRetry}
               aria-label="Retry the operation"
             >

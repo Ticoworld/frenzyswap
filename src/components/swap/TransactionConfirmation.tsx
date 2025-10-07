@@ -92,7 +92,7 @@ export default function SwapConfirmation({
             href={explorerUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-yellow-500 hover:text-yellow-400 text-sm flex items-center"
+            className="text-brand-purple hover:text-brand-purple/80 text-sm flex items-center"
           >
             View on Solscan <FaExternalLinkAlt className="ml-1 text-xs" />
           </a>
@@ -102,7 +102,7 @@ export default function SwapConfirmation({
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30 rounded-xl p-3 text-center text-yellow-500 text-sm mb-6">
+      <div className="bg-brand-purple/10 border-2 border-brand-purple/20 rounded-xl p-3 text-center text-brand-purple text-sm mb-6">
         🔥 {memeFee !== undefined
           ? `${memeFee.toFixed(6)} ${fromToken?.symbol || ''} was used to buyback and burn FRENZY tokens`
           : 'A portion of fees has been used to buyback and burn FRENZY tokens'}
@@ -110,7 +110,7 @@ export default function SwapConfirmation({
 
       <button
         onClick={onContinue}
-        className="w-full py-3 px-4 bg-yellow-500 hover:bg-yellow-400 text-black font-medium rounded-xl transition-colors"
+        className="w-full py-3 px-4 bg-brand-purple hover:bg-brand-purple/90 text-white font-medium rounded-xl transition-colors"
       >
         Make Another Swap
       </button>

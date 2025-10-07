@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { HiMenu, HiX } from "react-icons/hi";
-// Lazy-load menus/drawer to keep initial JS small
+
 const RewardsMenu = dynamic(() => import("@/components/navigation/RewardsMenu"), { ssr: false });
 const AnalyticsMenu = dynamic(() => import("@/components/navigation/AnalyticsMenu"), { ssr: false });
 const UserMenu = dynamic(() => import("@/components/navigation/UserMenu"), { ssr: false });
@@ -21,7 +21,6 @@ export function DappHeader() {
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
 
-  // Auto-close mobile drawer on desktop breakpoint
   useEffect(() => {
     if (!mobileOpen) return;
     const onResize = () => {
@@ -34,17 +33,17 @@ export function DappHeader() {
   const isSwap = pathname === "/" || pathname.startsWith("/swap");
 
   return (
-    <header className="bg-white dark:bg-gray-900/95 backdrop-blur border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
+    <header className="bg-black/60 backdrop-blur-xl border-b-2 border-brand-purple/10 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/assets/logos/frenzyswap_logomark.svg"
+              src="/frenzyswap_logomark.svg"
               alt="FrenzySwap"
               width={40}
               height={40}
-              className="md:hidden"
+              className="md:hidden transition-opacity group-hover:opacity-80"
               priority
             />
             <Image
@@ -52,7 +51,7 @@ export function DappHeader() {
               alt="FrenzySwap"
               width={140}
               height={28}
-              className="hidden md:block"
+              className="hidden md:block transition-opacity group-hover:opacity-80"
               priority
             />
           </Link>
@@ -61,19 +60,26 @@ export function DappHeader() {
           <nav className="hidden md:flex items-center gap-1">
             <Link
               href="/swap"
-              className={`relative px-3 py-2 rounded-md transition-colors ${
-                isSwap ? "text-yellow-600 dark:text-yellow-500" : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              className={`relative px-3 py-2 rounded-card text-body-md font-medium transition-all duration-300 ${
+                isSwap ? "text-brand-purple" : "text-gray-400 hover:text-white"
               }`}
             >
               Swap
               {isSwap && (
-                <motion.span layoutId="nav-underline" className="absolute left-0 right-0 -bottom-px h-0.5 bg-yellow-600 dark:bg-yellow-500" />
+                <motion.span 
+                  layoutId="nav-underline" 
+                  className="absolute left-0 right-0 -bottom-px h-0.5 bg-gradient-to-r from-brand-purple to-brand-blue rounded-full" 
+                />
               )}
             </Link>
             <RewardsMenu />
             <AnalyticsMenu />
-            <Link href="/staking" className="px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">Staking</Link>
-            <Link href="/dao" className="px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">DAO</Link>
+            <Link 
+              href="/portfolio" 
+              className="px-3 py-2 rounded-card text-body-md font-medium text-gray-400 hover:text-white transition-all duration-300"
+            >
+              Portfolio
+            </Link>
           </nav>
 
           {/* Right side: wallet + user + mobile toggle */}
@@ -86,7 +92,7 @@ export function DappHeader() {
             </div>
             <button
               onClick={() => setMobileOpen((v) => !v)}
-              className="md:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2"
+              className="md:hidden text-gray-400 hover:text-white p-2 transition-colors"
               aria-label="Open menu"
             >
               {isClient ? (mobileOpen ? <HiX className="h-6 w-6" /> : <HiMenu className="h-6 w-6" />) : <span />}

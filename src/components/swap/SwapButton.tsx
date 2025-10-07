@@ -47,12 +47,12 @@ export default function SwapButton({
     <motion.button
       whileHover={{ scale: isButtonDisabled ? 1 : 1.02 }}
       whileTap={{ scale: isButtonDisabled ? 1 : 0.98 }}
-      className={`w-full py-3 px-4 rounded-xl font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 ${
+      className={`w-full py-3 px-4 rounded-xl font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black ${
         !connected 
-          ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500 text-white shadow-lg focus:ring-blue-500'
+          ? 'bg-brand-purple hover:bg-brand-purple/90 text-white shadow-lg focus:ring-brand-purple border-2 border-brand-purple'
           : !isButtonDisabled
-          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black shadow-lg focus:ring-yellow-500'
-          : 'bg-gray-700 text-gray-400 cursor-not-allowed focus:ring-gray-500'
+          ? 'bg-brand-purple hover:bg-brand-purple/90 text-white shadow-lg focus:ring-brand-purple border-2 border-brand-purple'
+          : 'bg-gray-900 text-gray-500 cursor-not-allowed focus:ring-gray-700 border-2 border-gray-800'
       } ${isLoading ? 'opacity-75' : ''}`}
       disabled={isButtonDisabled}
       onClick={handleClick}

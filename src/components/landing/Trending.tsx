@@ -13,11 +13,11 @@ function num(n: number | undefined | null, opts: Intl.NumberFormatOptions = {}) 
   return new Intl.NumberFormat(undefined, { maximumFractionDigits: 0, ...opts }).format(v);
 }
 
-function MiniBar({ pct, color = 'bg-indigo-500' }: { pct: number; color?: string }) {
+function MiniBar({ pct, color = 'bg-gradient-to-r from-brand-purple to-brand-blue' }: { pct: number; color?: string }) {
   const width = Math.max(4, Math.min(100, Math.round(pct)));
   return (
-    <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded">
-      <div className={`h-2 ${color} rounded`} style={{ width: `${width}%` }} />
+    <div className="h-2 bg-gray-800 rounded-full">
+      <div className={`h-2 ${color} rounded-full`} style={{ width: `${width}%` }} />
     </div>
   );
 }
@@ -44,8 +44,8 @@ export default function Trending() {
   ];
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-16 bg-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,20 +54,20 @@ export default function Trending() {
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8"
         >
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <FiTrendingUp className="text-yellow-500" /> Trending now
+            <h2 className="text-display-sm md:text-display-md font-bold text-white flex items-center gap-3">
+              <span className="text-brand-purple">Trending</span> Now
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">Live on-chain activity across FrenzySwap</p>
+            <p className="text-body-md text-gray-400 mt-2">Live on-chain activity across FrenzySwap</p>
           </div>
-          <div className="inline-flex rounded-xl border border-gray-200 dark:border-gray-700 p-1 bg-gray-50 dark:bg-gray-800">
+          <div className="inline-flex rounded-2xl border-2 border-gray-800 p-1 bg-[#0a0a0a]">
             {tabs.map(t => (
               <button
                 key={t.key}
                 onClick={() => setTf(t.key)}
-                className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+                className={`px-4 py-2 text-sm rounded-xl transition-all ${
                   tf === t.key
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-700/60'
+                    ? 'bg-brand-purple text-white'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {t.label}
@@ -83,12 +83,10 @@ export default function Trending() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5"
+            className="bg-[#0a0a0a] border-2 border-gray-800 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <FiBarChart2 /> Top pairs
-              </h3>
+              <h3 className="font-semibold text-white">Top pairs</h3>
               <span className="text-xs text-gray-500">by USD volume</span>
             </div>
             {loadingPairs ? (
@@ -98,7 +96,7 @@ export default function Trending() {
                 {pairs.map((p: any) => (
                   <li key={p.pair} className="text-sm">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-gray-800 dark:text-gray-200 mr-2 truncate">{p.pair}</span>
+                      <span className="text-gray-200 mr-2 truncate">{p.pair}</span>
                       <span className="text-xs text-gray-500">${num(p.volume)}</span>
                     </div>
                     <MiniBar pct={(p.volume / maxPair) * 100} />
@@ -117,12 +115,10 @@ export default function Trending() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55 }}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5"
+            className="bg-[#0a0a0a] border-2 border-gray-800 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <FiBarChart2 /> Top tokens
-              </h3>
+              <h3 className="font-semibold text-white">Top tokens</h3>
               <span className="text-xs text-gray-500">by USD volume</span>
             </div>
             {loadingTokens ? (
@@ -132,7 +128,7 @@ export default function Trending() {
                 {tokens.map((t: any) => (
                   <li key={t.token} className="text-sm">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-gray-800 dark:text-gray-200 mr-2 truncate">{t.token}</span>
+                      <span className="text-gray-200 mr-2 truncate">{t.token}</span>
                       <span className="text-xs text-gray-500">${num(t.volume)}</span>
                     </div>
                     <MiniBar pct={(t.volume / maxToken) * 100} color="bg-emerald-500" />
@@ -151,12 +147,10 @@ export default function Trending() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5"
+            className="bg-[#0a0a0a] border-2 border-gray-800 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <FiZap /> Biggest swaps
-              </h3>
+              <h3 className="font-semibold text-white">Biggest swaps</h3>
               <span className="text-xs text-gray-500">top {biggest?.length || 0}</span>
             </div>
             {loadingBig ? (
@@ -166,7 +160,7 @@ export default function Trending() {
                 {biggest.map((b: any, idx: number) => (
                   <li key={`${b.wallet}-${idx}`} className="text-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-800 dark:text-gray-200 mr-2 truncate">{b.pair}</span>
+                      <span className="text-gray-200 mr-2 truncate">{b.pair}</span>
                       <span className="text-xs text-gray-500">${num(b.volume)}</span>
                     </div>
                     <div className="text-[11px] text-gray-500 mt-0.5">
@@ -188,12 +182,10 @@ export default function Trending() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5"
+            className="bg-[#0a0a0a] border-2 border-gray-800 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <FiBarChart2 /> Top projects
-              </h3>
+              <h3 className="font-semibold text-white">Top projects</h3>
               <span className="text-xs text-gray-500">by USD volume</span>
             </div>
             {loadingProjects ? (
@@ -203,7 +195,7 @@ export default function Trending() {
                 {projects.map((p: any) => (
                   <li key={p.project} className="text-sm">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-gray-800 dark:text-gray-200 mr-2 truncate">{p.project}</span>
+                      <span className="text-gray-200 mr-2 truncate">{p.project}</span>
                       <span className="text-xs text-gray-500">${num(p.volume)}</span>
                     </div>
                     <MiniBar pct={(p.volume / maxProject) * 100} color="bg-yellow-500" />
@@ -221,12 +213,10 @@ export default function Trending() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.55 }}
-            className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-5"
+            className="bg-[#0a0a0a] border-2 border-gray-800 rounded-2xl p-5"
           >
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <FiClock /> Hot hours (UTC)
-              </h3>
+              <h3 className="font-semibold text-white">Hot hours (UTC)</h3>
               <span className="text-xs text-gray-500">by USD volume</span>
             </div>
             {loadingHours ? (
@@ -247,7 +237,7 @@ export default function Trending() {
                   {hours.map((h: any) => (
                     <li key={h.hour} className="text-sm">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-gray-800 dark:text-gray-200">{String(h.hour).padStart(2, '0')}:00</span>
+                        <span className="text-gray-200">{String(h.hour).padStart(2, '0')}:00</span>
                         <span className="text-xs text-gray-500">${num(h.volume)}</span>
                       </div>
                       <MiniBar pct={(h.volume / maxHour) * 100} color="bg-rose-500" />
@@ -265,21 +255,21 @@ export default function Trending() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-gradient-to-br from-yellow-50 to-white dark:from-gray-800 dark:to-gray-800/60 border border-yellow-200/60 dark:border-yellow-500/20 rounded-2xl p-5"
+            className="bg-gradient-to-br from-brand-purple/10 to-brand-blue/10 border-2 border-brand-purple/20 rounded-2xl p-5"
           >
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-3">MEME aggregates ({tf})</h3>
+            <h3 className="font-semibold text-white mb-3">MEME aggregates ({tf})</h3>
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="bg-white/70 dark:bg-gray-900/30 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <div className="bg-black/30 rounded-lg p-3 border border-gray-800">
                 <div className="text-[11px] text-gray-500 mb-1">Volume</div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white">${num(Math.round(meme.volumeUsd))}</div>
+                <div className="text-lg font-semibold text-white">${num(Math.round(meme.volumeUsd))}</div>
               </div>
-              <div className="bg-white/70 dark:bg-gray-900/30 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <div className="bg-black/30 rounded-lg p-3 border border-gray-800">
                 <div className="text-[11px] text-gray-500 mb-1">Fees</div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white">${num(Math.round(meme.feesUsd))}</div>
+                <div className="text-lg font-semibold text-white">${num(Math.round(meme.feesUsd))}</div>
               </div>
-              <div className="bg-white/70 dark:bg-gray-900/30 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <div className="bg-black/30 rounded-lg p-3 border border-gray-800">
                 <div className="text-[11px] text-gray-500 mb-1">Burned</div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white">{num(Math.round(meme.burns))}</div>
+                <div className="text-lg font-semibold text-white">{num(Math.round(meme.burns))}</div>
               </div>
             </div>
             <p className="text-[11px] text-gray-500 mt-3">Privacy respected. Opted-out and private users excluded.</p>

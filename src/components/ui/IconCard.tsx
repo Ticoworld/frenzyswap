@@ -5,7 +5,7 @@ export default function IconCard({
   icon,
   title,
   description,
-  color = "bg-yellow-500/20",
+  color = "bg-brand-purple/20",
   delay = 0
 }: {
   icon: React.ReactNode;
@@ -19,9 +19,9 @@ export default function IconCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className={`${color} rounded-xl p-6 border border-gray-700 hover:border-yellow-500 transition-colors`}
+      className={`${color} rounded-xl p-6 border border-gray-700 hover:border-brand-purple transition-colors`}
     >
-      <div className="text-yellow-500 mb-4 text-3xl">
+      <div className="text-brand-purple mb-4 text-3xl">
         {icon}
       </div>
       <h3 className="text-xl font-bold mb-2">{title}</h3>

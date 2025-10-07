@@ -78,9 +78,9 @@ export default function NetworkStatus({ className = '', showLabel = true }: Netw
       return {
         icon: FaExclamationTriangle,
         text: 'Slow Connection',
-        color: 'text-yellow-500',
-        bgColor: 'bg-yellow-500/10',
-        borderColor: 'border-yellow-500/30'
+        color: 'text-orange-500',
+        bgColor: 'bg-orange-500/10',
+        borderColor: 'border-orange-500/30'
       };
     }
     
@@ -154,7 +154,7 @@ export function PingIndicator() {
       <div className={`w-2 h-2 rounded-full ${
         latency === null ? 'bg-red-500' : 
         latency < 100 ? 'bg-green-500' : 
-        latency < 500 ? 'bg-yellow-500' : 'bg-red-500'
+        latency < 500 ? 'bg-orange-500' : 'bg-red-500'
       }`} />
       <span>{latency ? `${latency}ms` : 'Failed'}</span>
     </div>

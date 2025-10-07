@@ -37,13 +37,13 @@ export default function TokenRiskWarning({
         };
       case 'medium':
         return {
-          color: 'yellow',
+          color: 'orange',
           title: 'Unverified Token',
           icon: ExclamationTriangleIcon,
-          bgColor: 'bg-yellow-900/20',
-          borderColor: 'border-yellow-500/30',
-          textColor: 'text-yellow-400',
-          buttonColor: 'bg-yellow-600 hover:bg-yellow-700'
+          bgColor: 'bg-orange-900/20',
+          borderColor: 'border-orange-500/30',
+          textColor: 'text-orange-400',
+          buttonColor: 'bg-orange-600 hover:bg-orange-700'
         };
       default:
         return {

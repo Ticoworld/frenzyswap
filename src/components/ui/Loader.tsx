@@ -23,13 +23,13 @@ export default function GlobalLoader() {
       }
     }, 10000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [resourcesLoaded]);
 
   return (
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed inset-0 z-50 bg-white dark:bg-gray-900 flex flex-col items-center justify-center"
+          className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
@@ -38,41 +38,41 @@ export default function GlobalLoader() {
             {/* Triple ring loader */}
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
-                className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full"
+                className="w-16 h-16 border-4 border-brand-purple border-t-transparent rounded-full"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
-                className="w-12 h-12 border-4 border-yellow-400 border-b-transparent rounded-full opacity-70"
+                className="w-12 h-12 border-4 border-brand-purple/70 border-b-transparent rounded-full opacity-70"
                 animate={{ rotate: -360 }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
               />
             </div>
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div
-                className="w-8 h-8 border-4 border-yellow-300 border-l-transparent rounded-full opacity-50"
+                className="w-8 h-8 border-4 border-brand-purple/50 border-l-transparent rounded-full opacity-50"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
               />
             </div>
           </div>
           
-          <div className="text-yellow-500 text-xl font-bold mb-4">
+          <div className="text-brand-purple text-xl font-bold mb-4">
             {progress < 100 ? 'Loading FrenzySwap' : 'Almost Ready!'}
           </div>
           
-          <div className="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-64 h-2 bg-gray-900/50 backdrop-blur-sm rounded-full overflow-hidden border border-gray-800/50">
             <motion.div 
-              className="h-full bg-gradient-to-r from-yellow-500 to-yellow-400"
+              className="h-full bg-gradient-to-r from-brand-purple to-brand-blue"
               initial={{ width: "0%" }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.3 }}
             />
           </div>
           
-          <div className="mt-4 text-gray-500 dark:text-gray-400 text-sm">
+          <div className="mt-4 text-gray-400 text-sm">
             {progress < 100 ? (
               `Loading ${progress}%`
             ) : (

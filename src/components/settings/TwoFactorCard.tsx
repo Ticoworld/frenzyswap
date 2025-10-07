@@ -76,14 +76,14 @@ export default function TwoFactorCard() {
       {enabled === false && (
         <div className="mt-3">
           {!qr ? (
-            <button onClick={start} disabled={busy} className="px-3 py-2 rounded bg-yellow-500 text-black font-semibold disabled:opacity-50">Start setup</button>
+            <button onClick={start} disabled={busy} className="px-3 py-2 rounded bg-brand-purple text-white font-semibold disabled:opacity-50">Start setup</button>
           ) : (
             <div className="grid gap-2 max-w-sm">
               <Image src={qr} alt="2FA QR" width={256} height={256} className="rounded border border-gray-200 dark:border-gray-700 h-auto w-auto" />
               <label className="text-sm text-gray-600 dark:text-gray-300">Enter 6-digit code</label>
               <input value={token} onChange={e=>setToken(e.target.value)} className="px-3 py-2 rounded bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700" placeholder="123456" />
               <div className="flex gap-2">
-                <button onClick={verify} disabled={busy || token.length<6} className="px-3 py-2 rounded bg-yellow-500 text-black font-semibold disabled:opacity-50">Verify & enable</button>
+                <button onClick={verify} disabled={busy || token.length<6} className="px-3 py-2 rounded bg-brand-purple text-white font-semibold disabled:opacity-50">Verify & enable</button>
                 <button onClick={()=>setQr(null)} className="px-3 py-2 rounded bg-gray-200 dark:bg-gray-700">Cancel</button>
               </div>
             </div>

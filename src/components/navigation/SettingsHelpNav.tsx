@@ -24,7 +24,7 @@ export default function SettingsHelpNav({ showBack = true }: { showBack?: boolea
             <button onClick={() => router.back()} className="px-2 py-1 text-xs rounded border border-gray-700 text-gray-300 hover:bg-gray-800" aria-label={t('nav.back')}>← {t('nav.back')}</button>
           )}
           {links.map(l => (
-            <Link key={l.href} href={l.href} className={pathname === l.href ? 'px-2.5 py-1 text-xs rounded bg-yellow-600 text-black whitespace-nowrap' : 'px-2.5 py-1 text-xs rounded text-gray-300 hover:bg-gray-800 whitespace-nowrap'}>
+            <Link key={l.href} href={l.href} className={pathname === l.href ? 'px-2.5 py-1 text-xs rounded bg-brand-purple text-white whitespace-nowrap' : 'px-2.5 py-1 text-xs rounded text-gray-300 hover:bg-gray-800 whitespace-nowrap'}>
               {t(l.key)}
             </Link>
           ))}

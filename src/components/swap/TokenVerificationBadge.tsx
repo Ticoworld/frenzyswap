@@ -44,7 +44,7 @@ export default function TokenVerificationBadge({ token, size = 'sm' }: TokenVeri
         className="inline-flex items-center"
         title="Unverified token from DexScreener"
       >
-        <ExclamationTriangleIcon className={`${iconSize} text-yellow-500`} />
+        <ExclamationTriangleIcon className={`${iconSize} text-orange-500`} />
       </div>
     );
   }
