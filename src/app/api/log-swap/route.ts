@@ -7,6 +7,7 @@ import { awardPoints, PointsPolicy, upsertStreak, logEvent } from '@/lib/gamific
 import { upsertUserPnlCache, getUserPnl } from '@/lib/pnl'
 import { verifyReferralIfAny } from '@/lib/referrals'
 import { evaluateAndAwardBadges } from '@/lib/badges'
+import { SwapLogSchema, validateInput } from '@/lib/validation' // 🔒 SECURITY: Import validation
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,8 +21,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    // Debug: log incoming analytics payload
-    console.log('[log-swap] Incoming body:', JSON.stringify(body));
+    
+    // 🔒 SECURITY: Validate input data before processing
+    let validatedData;
+    try {
+      validatedData = validateInput(SwapLogSchema, body);
+    } catch (error) {
+      console.error('[log-swap] Validation error:', error);
+      return NextResponse.json(
+        { error: 'Invalid input data', details: error instanceof Error ? error.message : 'Unknown validation error' },
+        { status: 400 }
+      );
+    }
+    
+    // Debug: log validated analytics payload
+    console.log('[log-swap] Validated body:', JSON.stringify(validatedData));
+    
     const {
       walletAddress,
       fromToken,
@@ -41,33 +56,25 @@ export async function POST(request: NextRequest) {
       routePlan,
       fee_token_symbol,
       fee_token_mint
-    } = body
-
-    // Validate required fields
-    if (!walletAddress || !fromToken || !toToken || !signature) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
+    } = validatedData;
 
     // Prepare swap record to match database schema
     const swapRecord = {
       wallet_address: walletAddress,
       from_token: fromToken,
       to_token: toToken,
-      from_amount: parseFloat(fromAmount) || 0,
-      to_amount: parseFloat(toAmount) || 0,
-      from_usd_value: parseFloat(fromUsdValue) || null,
-      to_usd_value: parseFloat(toUsdValue) || null,
-      fees_paid: parseFloat(feesPaid) || null,
-      fees_usd_value: parseFloat(feesUsdValue) || null,
-      signature: signature,
-      block_time: blockTime ? parseInt(blockTime) : null,
-      jupiter_fee: parseFloat(jupiterFee) || null,
-      platform_fee: parseFloat(platformFee) || null,
-      meme_burned: parseFloat(memeBurned) || null,
-      slippage: parseFloat(slippage) || null,
+  from_amount: fromAmount !== undefined ? parseFloat(String(fromAmount)) || 0 : 0,
+  to_amount: toAmount !== undefined ? parseFloat(String(toAmount)) || 0 : 0,
+  from_usd_value: fromUsdValue !== undefined ? parseFloat(String(fromUsdValue)) : null,
+  to_usd_value: toUsdValue !== undefined ? parseFloat(String(toUsdValue)) : null,
+  fees_paid: feesPaid !== undefined ? parseFloat(String(feesPaid)) : null,
+  fees_usd_value: feesUsdValue !== undefined ? parseFloat(String(feesUsdValue)) : null,
+  signature: signature,
+  block_time: blockTime !== undefined && blockTime !== null ? parseInt(String(blockTime)) : null,
+  jupiter_fee: jupiterFee !== undefined ? parseFloat(String(jupiterFee)) : null,
+  platform_fee: platformFee !== undefined ? parseFloat(String(platformFee)) : null,
+  meme_burned: memeBurned !== undefined ? parseFloat(String(memeBurned)) : null,
+  slippage: slippage !== undefined ? parseFloat(String(slippage)) : null,
       route_plan: routePlan || null,
       fee_token_symbol: fee_token_symbol || null,
       fee_token_mint: fee_token_mint || null

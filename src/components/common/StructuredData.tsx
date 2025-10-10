@@ -106,10 +106,51 @@ export default function StructuredData() {
     ]
   };
 
+  // 🔒 SECURITY: Sanitize JSON data before rendering to prevent XSS
+  const sanitizeJsonLd = (data: any): string => {
+    // Validate that all URLs are safe
+    const isValidUrl = (url: string): boolean => {
+      try {
+        const urlObj = new URL(url);
+        return ['https:', 'http:'].includes(urlObj.protocol);
+      } catch {
+        return false;
+      }
+    };
+
+    // Recursively sanitize object
+    const sanitizeObject = (obj: any): any => {
+      if (typeof obj === 'string') {
+        if (obj.startsWith('http') && !isValidUrl(obj)) {
+          throw new Error('Invalid URL detected in structured data');
+        }
+        // Escape potential script tags and remove dangerous characters
+        return obj.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '');
+      }
+      if (Array.isArray(obj)) {
+        return obj.map(sanitizeObject);
+      }
+      if (obj && typeof obj === 'object') {
+        const sanitized: any = {};
+        for (const [key, value] of Object.entries(obj)) {
+          sanitized[key] = sanitizeObject(value);
+        }
+        return sanitized;
+      }
+      return obj;
+    };
+
+    const sanitizedData = sanitizeObject(data);
+    return JSON.stringify(sanitizedData);
+  };
+
+  const jsonLdContent = sanitizeJsonLd(structuredData);
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      // 🔒 SECURITY: Use sanitized JSON instead of direct dangerouslySetInnerHTML
+      dangerouslySetInnerHTML={{ __html: jsonLdContent }}
     />
   );
 }

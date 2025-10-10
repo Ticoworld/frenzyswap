@@ -198,7 +198,7 @@ export default function Trending() {
                       <span className="text-gray-200 mr-2 truncate">{p.project}</span>
                       <span className="text-xs text-gray-500">${num(p.volume)}</span>
                     </div>
-                    <MiniBar pct={(p.volume / maxProject) * 100} color="bg-yellow-500" />
+                    <MiniBar pct={(p.volume / maxProject) * 100} color="bg-brand-purple" />
                     <div className="text-[11px] text-gray-500 mt-1">{num(p.trades)} trades · {num(p.traders)} traders · ${num(p.fees)} fees</div>
                   </li>
                 ))}

@@ -54,7 +54,8 @@
     "swr": "^2.3.4",
     "typescript": "5.3.3",
     "web-push": "^3.6.7",
-    "workbox-webpack-plugin": "^7.3.0"
+    "workbox-webpack-plugin": "^7.3.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.20",

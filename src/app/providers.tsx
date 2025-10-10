@@ -67,13 +67,35 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             style: {
               background: '#1a1a1a',
               color: '#fff',
-              border: '1px solid #facc15', // Tailwind yellow-400
+              border: '1px solid #8b5cf6', // brand-purple
               padding: '12px 16px',
               fontSize: '0.875rem',
               fontWeight: '500'
             },
+            success: {
+              style: {
+                background: '#1a1a1a',
+                color: '#fff',
+                border: '1px solid #10b981', // green-500
+              },
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#1a1a1a'
+              }
+            },
+            error: {
+              style: {
+                background: '#1a1a1a',
+                color: '#fff',
+                border: '1px solid #ef4444', // red-500
+              },
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#1a1a1a'
+              }
+            },
             iconTheme: {
-              primary: '#facc15',
+              primary: '#8b5cf6', // brand-purple
               secondary: '#1a1a1a'
             }
           }}

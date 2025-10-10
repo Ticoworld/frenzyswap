@@ -6,6 +6,7 @@ import { VersionedTransaction, Transaction, Connection } from '@solana/web3.js';
 import type { Token, QuoteResponse, SwapRequest, SwapResponse } from '@/config/types';
 import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
+import { quoteCache } from './quoteCache'; // ⚡ SPEED OPTIMIZATION: Import quote cache
 
 // Base URLs - Official Jupiter Swap API v1
 const JUPITER_BASE_URL = 'https://lite-api.jup.ag';
@@ -14,7 +15,7 @@ const QUOTE_API_URL = 'https://lite-api.jup.ag';
 // Create Axios instance with retry + timeout
 const http = axios.create({
   baseURL: JUPITER_BASE_URL,
-  timeout: 15000,
+  timeout: 12000, // ⚡ SPEED OPTIMIZATION: Reduced from 15s to 12s
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
@@ -23,7 +24,7 @@ const http = axios.create({
 });
 
 axiosRetry(http, {
-  retries: 3,
+  retries: 2, // ⚡ SPEED OPTIMIZATION: Reduced from 3 to 2 retries
   retryDelay: axiosRetry.exponentialDelay,
   retryCondition: (error) =>
     axiosRetry.isNetworkOrIdempotentRequestError(error) || error.code === 'ECONNABORTED',
@@ -79,6 +80,15 @@ export const getQuote = async (
     throw new Error('Amount must be greater than 0');
   }
 
+  // ⚡ SPEED OPTIMIZATION: Check cache first
+  const cachedQuote = quoteCache.get(inputMint, outputMint, amount, slippage);
+  if (cachedQuote) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 Cache hit for quote:', { inputMint, outputMint, amount, slippage });
+    }
+    return cachedQuote;
+  }
+
   const params: Record<string, any> = {
     inputMint,
     outputMint,
@@ -102,7 +112,7 @@ export const getQuote = async (
     
     const response = await axios.get(`${QUOTE_API_URL}/swap/v1/quote`, { 
       params,
-      timeout: 10000,
+      timeout: 8000, // ⚡ SPEED OPTIMIZATION: Reduced from 10s to 8s
       headers: {
         'Accept': 'application/json',
       }
@@ -110,8 +120,11 @@ export const getQuote = async (
     
     const validatedQuote = validateQuoteResponse(response.data);
     
+    // ⚡ SPEED OPTIMIZATION: Cache the successful quote
+    quoteCache.set(inputMint, outputMint, amount, slippage, validatedQuote);
+    
     if (process.env.NODE_ENV === 'development') {
-      console.log('Quote received:', {
+      console.log('Quote received and cached:', {
         inAmount: validatedQuote.inAmount,
         outAmount: validatedQuote.outAmount,
         priceImpactPct: validatedQuote.priceImpactPct,

@@ -42,9 +42,9 @@ export function ComingSoon({ title, description, icon }: ComingSoonProps) {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-4 text-center"
+        className="bg-brand-purple/10 border border-brand-purple/30 rounded-xl p-4 text-center"
       >
-        <p className="text-yellow-500">🚀 Launching soon in the MemeFrenzy ecosystem</p>
+        <p className="text-brand-purple">🚀 Launching soon in the MemeFrenzy ecosystem</p>
       </motion.div>
     </div>
   );

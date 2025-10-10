@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import fallbackTokens from '@/config/fallbackTokens.json';
 import { Token, MEME_TOKEN } from '@/config/tokens';
 import { debounce } from 'lodash';
@@ -61,6 +61,8 @@ export function useTokenList() {
     hasResults: true,
     searchTerm: '',
   });
+  // Store the verified set in a ref for fast cross-check
+  const verifiedSetRef = useRef<Set<string>>(new Set());
 
   // Load cache instantly on mount
   useEffect(() => {
@@ -86,11 +88,9 @@ export function useTokenList() {
   useEffect(() => {
     const cached = loadFromCache();
     const isStale = !cached || (Date.now() - cached.timestamp > CACHE_DURATION);
-    const hasFullTokenList = cached && cached.data && cached.data.length > 50000; // Check if we have the full list
+    const hasFullTokenList = cached && cached.data && cached.data.length > 50000;
     const shouldRefresh = isStale || retryCount > 0 || cached?.version !== CACHE_VERSION || !hasFullTokenList;
-    
-    console.log(`[TokenList] 🔄 Refresh check: isStale=${isStale}, retryCount=${retryCount}, versionMismatch=${cached?.version !== CACHE_VERSION}, hasFullList=${hasFullTokenList} (${cached?.data?.length || 0} tokens)`);
-    
+
     if (shouldRefresh) {
       (async () => {
         setLoading(true);
@@ -100,18 +100,29 @@ export function useTokenList() {
         let success = false;
         while (attempt < 5 && !success) {
           try {
-            console.log(`[TokenList] 🔄 Fetching fresh tokens from API (attempt ${attempt + 1})`);
             const res = await fetch('/api/tokens', { cache: 'no-store' });
             if (!res.ok) throw new Error('Fetch failed');
-            const json: Token[] = await res.json();
-            console.log(`[TokenList] ✅ Successfully fetched ${json.length} tokens from API`);
+            const json = await res.json();
+            // Support new API format: { tokens, verifiedAddresses }
+            let tokenList: Token[] = [];
+            if (Array.isArray(json)) {
+              tokenList = json;
+            } else if (json.tokens && Array.isArray(json.tokens)) {
+              tokenList = json.tokens;
+              if (Array.isArray(json.verifiedAddresses)) {
+                verifiedSetRef.current = new Set(json.verifiedAddresses);
+              }
+            }
+            // Cross-check all tokens for verification
             const sorted = [
               MEME_TOKEN,
-              ...json.filter((t) => t.address !== MEME_TOKEN.address),
+              ...tokenList.map((t) => ({
+                ...t,
+                verified: t.verified || verifiedSetRef.current.has(t.address),
+              })).filter((t) => t.address !== MEME_TOKEN.address),
             ];
             setTokens(sorted);
             saveToCache(sorted);
-            console.log(`[TokenList] 💾 Cached ${sorted.length} tokens to localStorage`);
             success = true;
           } catch (err) {
             attempt++;
@@ -126,7 +137,6 @@ export function useTokenList() {
           }
         }
         if (!success) {
-          // fallback: use cache if available, else fallbackTokens
           const fallback = cached?.data || fallbackTokens;
           const sorted = [
             MEME_TOKEN,
@@ -271,15 +281,15 @@ export function useTokenList() {
 
   const filteredTokens = useMemo(() => {
     if (!searchQuery) return tokens;
-    
     const query = searchQuery.toLowerCase();
-    const jupiterResults = tokens.filter((t) =>
-      t.symbol.toLowerCase().includes(query) || 
+    const jupiterResults = tokens.map((t) => ({
+      ...t,
+      verified: t.verified || verifiedSetRef.current.has(t.address),
+    })).filter((t) =>
+      t.symbol.toLowerCase().includes(query) ||
       t.name.toLowerCase().includes(query) ||
       t.address.toLowerCase().includes(query)
     );
-
-    // Return combination of Jupiter results + DexScreener results
     return [...jupiterResults, ...dexScreenerResults];
   }, [tokens, searchQuery, dexScreenerResults]);
 
@@ -292,5 +302,6 @@ export function useTokenList() {
     setSearchQuery,
     invalidateCache,
     searchFeedback,
+    verifiedSet: verifiedSetRef.current,
   };
 }

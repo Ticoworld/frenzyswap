@@ -183,7 +183,7 @@ export default function MobileDrawer({ open, onClose }: { open: boolean; onClose
           <Link
             href="/swap"
             onClick={onClose}
-            className="block text-center bg-gradient-to-r from-yellow-500 to-yellow-600 text-black font-medium py-2 rounded-lg shadow"
+            className="block text-center bg-gradient-to-r from-brand-purple to-brand-purple/90 text-white font-medium py-2 rounded-lg shadow"
           >
             Start Swapping
           </Link>
